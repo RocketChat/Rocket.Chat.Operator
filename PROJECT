@@ -1,0 +1,7 @@
+domain: libre.sh
+repo: git.indie.host/operators/rocketchat-operator
+resources:
+- group: apps
+  kind: Rocketchat
+  version: v1alpha1
+version: "2"

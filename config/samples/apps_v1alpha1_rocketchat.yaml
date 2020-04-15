@@ -1,0 +1,7 @@
+apiVersion: apps.libre.sh/v1alpha1
+kind: Rocketchat
+metadata:
+  name: rocketchat-sample
+spec:
+  # Add fields here
+  foo: bar
