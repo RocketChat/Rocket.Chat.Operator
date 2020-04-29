@@ -19,29 +19,97 @@ package controllers
 import (
 	"context"
 
+	appsv1alpha1 "git.indie.host/operators/rocketchat-operator/api/v1alpha1"
 	"github.com/go-logr/logr"
+	apierrs "k8s.io/apimachinery/pkg/api/errors"
 	"k8s.io/apimachinery/pkg/runtime"
+	"k8s.io/client-go/tools/record"
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 
-	appsv1alpha1 "git.indie.host/operators/rocketchat-operator/api/v1alpha1"
+	instance "k8s.libre.sh/instance"
+
+	"github.com/presslabs/controller-util/syncer"
 )
 
 // RocketchatReconciler reconciles a Rocketchat object
 type RocketchatReconciler struct {
 	client.Client
-	Log    logr.Logger
-	Scheme *runtime.Scheme
+	Log      logr.Logger
+	Scheme   *runtime.Scheme
+	Recorder record.EventRecorder
 }
+
+func ignoreNotFound(err error) error {
+	if apierrs.IsNotFound(err) {
+		return nil
+	}
+	return err
+}
+
+// NextcloudReconciler implements Reconcile interface
+func (r *RocketchatReconciler) GetClient() client.Client          { return r.Client }
+func (r *RocketchatReconciler) GetScheme() *runtime.Scheme        { return r.Scheme }
+func (r *RocketchatReconciler) GetRecorder() record.EventRecorder { return r.Recorder }
+func (r *RocketchatReconciler) GetLogger() logr.Logger            { return r.Log }
 
 // +kubebuilder:rbac:groups=apps.libre.sh,resources=rocketchats,verbs=get;list;watch;create;update;patch;delete
 // +kubebuilder:rbac:groups=apps.libre.sh,resources=rocketchats/status,verbs=get;update;patch
 
 func (r *RocketchatReconciler) Reconcile(req ctrl.Request) (ctrl.Result, error) {
-	_ = context.Background()
-	_ = r.Log.WithValues("rocketchat", req.NamespacedName)
+	ctx := context.Background()
+	log := r.Log.WithValues("rocketchat", req.NamespacedName)
+	log.Info("reconciling")
 
-	// your logic here
+	app := &appsv1alpha1.Rocketchat{}
+	if err := r.Get(ctx, req.NamespacedName, app); err != nil {
+		log.Error(err, "unable to fetch Nextcloud")
+		// we'll ignore not-found errors, since they can't be fixed by an immediate
+		// requeue (we'll need to wait for a new notification), and we can get them
+		// on deleted requests.
+		return ctrl.Result{}, ignoreNotFound(err)
+	}
+
+	// Application is in the process of being deleted, so no need to do anything.
+	/* 		if app.DeletionTimestamp != nil {
+		return ctrl.Result{}, nil
+	} */
+
+	app.SetDefaults()
+
+	objects := app.Spec.Settings.GetObjects()
+
+	for _, obj := range objects {
+		s := instance.NewObjectSyncer(obj, app, r)
+
+		if err := syncer.Sync(context.TODO(), s, r.Recorder); err != nil {
+			return ctrl.Result{}, err
+		}
+	}
+
+	//	objs := app.Spec.App.GetObjects()
+
+	//	for _, obj := range objs {
+	//		s := object.NewObjectSyncer(obj, app, r)
+
+	//		if err := syncer.Sync(context.TODO(), s, r.Recorder); err != nil {
+	//			return ctrl.Result{}, err
+	//		}
+	//	}
+
+	//	instanceComponents := app.GetComponents()
+
+	//	var syncers []syncer.Interface
+	//	for _, c := range instanceComponents {
+	//		syncers = append(syncers, instance.NewSyncer(c, r, app)...)
+	//	}
+
+	syncers := instance.NewSyncers(app, r, app)
+
+	err := r.sync(syncers)
+	if err != nil {
+		return ctrl.Result{}, err
+	}
 
 	return ctrl.Result{}, nil
 }
@@ -50,4 +118,13 @@ func (r *RocketchatReconciler) SetupWithManager(mgr ctrl.Manager) error {
 	return ctrl.NewControllerManagedBy(mgr).
 		For(&appsv1alpha1.Rocketchat{}).
 		Complete(r)
+}
+
+func (r *RocketchatReconciler) sync(syncers []syncer.Interface) error {
+	for _, s := range syncers {
+		if err := syncer.Sync(context.TODO(), s, r.Recorder); err != nil {
+			return err
+		}
+	}
+	return nil
 }

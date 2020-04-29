@@ -22,6 +22,8 @@ import (
 )
 
 type SMTP struct {
+	//	SMTP_IgnoreTLS
+	//	SMTP_Pool
 	Host      parameters.Parameter `json:"host,omitempty" env:"OVERWRITE_SETTING_SMTP_Host"`
 	Port      parameters.Parameter `json:"port,omitempty" env:"OVERWRITE_SETTING_SMTP_Port"`
 	Username  parameters.Parameter `json:"username,omitempty" env:"OVERWRITE_SETTING_SMTP_Username"`
@@ -30,8 +32,12 @@ type SMTP struct {
 }
 
 type Database struct {
-	URL      parameters.Parameter `json:"url,omitempty" env:"MONGO_URL"`
-	OplogURL parameters.Parameter `json:"oplogURL,omitempty" env:"MONGO_OPLOG_URL"`
+	URL              parameters.Parameter `json:"url,omitempty" env:"MONGO_URL"`
+	OplogURL         parameters.Parameter `json:"oplogURL,omitempty" env:"MONGO_OPLOG_URL"`
+	ReplicaSet       parameters.Parameter `json:"replicaSet,omitempty" env:"MONGO_REPLICASET"`
+	AuthenticationDB parameters.Parameter `json:"authenticationDB,omitempty" env:"MONGO_AUTHDB"`
+	Username         parameters.Parameter `json:"password,omitempty" env:"MONGO_USERNAME"`
+	Password         parameters.Parameter `json:"username,omitempty" env:"MONGO_PASSWORD"`
 }
 
 type Settings struct {

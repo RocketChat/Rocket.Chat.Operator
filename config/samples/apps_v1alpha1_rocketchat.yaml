@@ -4,4 +4,61 @@ metadata:
   name: rocketchat-sample
 spec:
   # Add fields here
-  foo: bar
+  settings:
+    database:
+      url:
+        value: "myhost"
+        type: "ConfigMap"
+      oplogURL:
+        source: "mysecret"
+        fromKey: OPLOG_URL
+        type: "Secret"
+  app: 
+    # Deployment
+    deployment:
+  #    meta:
+  #      name:
+  #      labels:
+  #      annotations:
+  #      finalizers:
+      replicas: 2
+  #    strategy:
+      # Pod
+  #    resources:
+  #    securityContext:
+  #    affinity:
+  #    restartPolicy:
+  #    tolerations:
+      nodeSelector: 
+        "test" : "test"
+      # Container
+  #    name: "app"
+  #    args:
+      image: "rocketchat/rocket.chat"
+  #    imagePullPolicy:
+  #    imagePullSecrets:
+  #    ports:
+  #    readinessProbe:
+  #    livenessProbe:
+      ##
+  #    extraContainers:
+  #    initContainers:
+    network:
+      service:
+      # meta:
+      #  name:
+      #  labels:
+      #  annotations:
+        port:
+          name: http
+          port: 3000
+          protocol: TCP
+      ingress:
+        meta:
+          annotations:
+            "ingress-class": "ingress"
+        host: myhost.tld
+        tls: true
+    #    tlsSecretRef: mysecret-tls
+        routes:
+          - "/"

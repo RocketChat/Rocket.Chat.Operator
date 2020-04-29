@@ -18,13 +18,19 @@ package v1alpha1
 
 import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	components "k8s.libre.sh/components"
 )
 
 // RocketchatSpec defines the desired state of Rocketchat
 type RocketchatSpec struct {
-	Version  string   `json:"version,omitempty"`
-	Settings Settings `json:"settings,omitempty"`
-	Storage  Storage  `json:"storage,omitempty"`
+	Version  string    `json:"version,omitempty"`
+	Settings *Settings `json:"settings,omitempty"`
+	Storage  Storage   `json:"storage,omitempty"`
+	App      *App      `json:"app,omitempty"`
+}
+
+type App struct {
+	*components.Workload `json:",inline"`
 }
 
 // RocketchatStatus defines the observed state of Rocketchat
