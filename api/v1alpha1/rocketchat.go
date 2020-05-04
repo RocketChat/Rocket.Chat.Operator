@@ -39,6 +39,9 @@ type RocketchatStatus struct {
 
 // +kubebuilder:object:root=true
 
+// +kubebuilder:resource:shortName=rc
+// +kubebuilder:subresource:status
+// +kubebuilder:printcolumn:name="version",type="string",JSONPath=".spec.Version",description="rocketchat version"
 // Rocketchat is the Schema for the rocketchats API
 type Rocketchat struct {
 	metav1.TypeMeta   `json:",inline"`
