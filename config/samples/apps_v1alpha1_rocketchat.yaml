@@ -5,6 +5,10 @@ metadata:
 spec:
   # Add fields here
   settings:
+    general:
+      url: 
+        value: chat.myhost.tld
+        type: "configmap"
     database:
       url:
         value: "myhost"
@@ -49,15 +53,15 @@ spec:
       #  name:
       #  labels:
       #  annotations:
-        port:
-          name: http
-          port: 3000
-          protocol: TCP
+   #     port:
+   #       name: http
+   #       port: 3000
+   #       protocol: TCP
       ingress:
         meta:
           annotations:
             "ingress-class": "ingress"
-        host: myhost.tld
+    #    host: myhost.tld
         tls: true
     #    tlsSecretRef: mysecret-tls
         routes:

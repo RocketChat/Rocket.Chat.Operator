@@ -43,6 +43,8 @@ type Database struct {
 type General struct {
 	URL        parameters.Parameter `json:"url,omitempty" env:"ROOT_URL"`
 	InstanceIP parameters.Parameter `json:"instanceIP,omitempty" env:"INSTANCE_IP"`
+	Username   parameters.Parameter `json:"username,omitempty" env:"ADMIN_USERNAME"`
+	Password   parameters.Parameter `json:"password,omitempty" env:"ADMIN_PASSWORD"`
 }
 
 type Settings struct {

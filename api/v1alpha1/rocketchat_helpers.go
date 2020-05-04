@@ -36,7 +36,26 @@ func (app *Rocketchat) GetComponents() map[int]instance.Component {
 func (o *App) GetName() string { return "app" }
 
 func (c *App) SetDefaults(i instance.Instance) {
+
 	c.Workload.SetDefaults(i)
+
+	if &c.Workload.Service.Port.Port == nil || c.Workload.Service.Port.Port == 0 {
+		c.Workload.Service.Port.Port = 3000
+	}
+	if len(c.Workload.Service.Port.Protocol) == 0 {
+		c.Workload.Service.Port.Protocol = "TCP"
+	}
+	if len(c.Workload.Service.Port.Name) == 0 {
+		c.Workload.Service.Port.Name = "http"
+	}
+
+	// Set Ingress Defaults
+	for _, p := range c.Workload.Deployment.Parameters {
+		if p.Key == "ROOT_URL" && len(p.Value) > 0 {
+			c.Workload.Network.Ingress.Host = p.Value
+		}
+	}
+
 }
 
 func (app *Rocketchat) SetDefaults() {
