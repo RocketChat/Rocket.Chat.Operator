@@ -30,6 +30,18 @@ func (s *SMTP) SetDefaults() {
 func (s *Database) SetDefaults() {
 }
 
+func (s *General) SetDefaults() {
+	if len(s.InstanceIP.FromKey) == 0 {
+		s.InstanceIP.FromKey = "status.podIP"
+	}
+	if len(s.InstanceIP.Source) == 0 {
+		s.InstanceIP.Source = "v1"
+	}
+	if len(s.InstanceIP.Type) == 0 {
+		s.InstanceIP.Type = "field"
+	}
+}
+
 func (s *Settings) GetMeta() instance.Meta { return s.ObjectMeta }
 
 func (s *Settings) SetDefaults(i instance.Instance) {
@@ -44,21 +56,30 @@ func (s *Settings) SetDefaults(i instance.Instance) {
 	s.ObjectMeta.Labels["app.kubernetes.io/component"] = "settings"
 
 	instance.SetObjectMeta(i, s.ObjectMeta)
+
+	s.General.SetDefaults()
 }
 
 func (s *Settings) GetParameters() parameters.Parameters {
 
 	params, err := parameters.Marshal(s.Database)
+	generalParams, err := parameters.Marshal(s.General)
+
+	params = append(params, generalParams...)
 
 	for _, p := range params {
 		if len(p.MountType) == 0 {
-			p.MountType = "envFrom"
+			p.MountType = parameters.MountFrom
 			if len(p.ValueFrom.Source) == 0 {
 				if len(s.GetName()) > 0 {
-					p.ValueFrom.Source = fmt.Sprintf("%v-%v", s.GetName(), s.GetComponent())
+					p.ValueFrom.Source = s.GetName()
 				}
 			}
+			if len(p.Type) == 0 {
+				p.Type = parameters.ConfigParameter
+			}
 		}
+		fmt.Println(p)
 	}
 	if err != nil {
 

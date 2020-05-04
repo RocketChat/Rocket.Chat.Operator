@@ -40,8 +40,14 @@ type Database struct {
 	Password         parameters.Parameter `json:"username,omitempty" env:"MONGO_PASSWORD"`
 }
 
+type General struct {
+	URL        parameters.Parameter `json:"url,omitempty" env:"ROOT_URL"`
+	InstanceIP parameters.Parameter `json:"instanceIP,omitempty" env:"INSTANCE_IP"`
+}
+
 type Settings struct {
 	*meta.ObjectMeta `json:"meta,omitempty"`
 	Database         Database `json:"database,omitempty"`
 	SMTP             SMTP     `json:"smtp,omitempty"`
+	General          General  `json:"general,omitempty"`
 }

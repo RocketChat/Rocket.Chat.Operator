@@ -21,8 +21,7 @@ func (o *Rocketchat) GetSettings() instance.Settings {
 
 func (app *Rocketchat) GetComponents() map[int]instance.Component {
 	components := map[int]instance.Component{
-		// 0: app.Spec.Settings,
-		1: app.Spec.App,
+		0: app.Spec.App,
 	}
 
 	return components

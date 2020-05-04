@@ -8,11 +8,11 @@ spec:
     database:
       url:
         value: "myhost"
-        type: "ConfigMap"
+        type: "configmap"
       oplogURL:
         source: "mysecret"
         fromKey: OPLOG_URL
-        type: "Secret"
+        type: "secret"
   app: 
     # Deployment
     deployment:

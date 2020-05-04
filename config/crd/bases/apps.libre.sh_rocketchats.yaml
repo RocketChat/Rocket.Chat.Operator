@@ -983,9 +983,7 @@ spec:
                                   description: Key that will be mounted as environment
                                     variable
                                   type: string
-                                mounType:
-                                  description: Type specifies if its a ConfigMap or
-                                    Secret
+                                mountType:
                                   type: string
                                 source:
                                   description: Source of the Secret or ConfigMap
@@ -1353,9 +1351,7 @@ spec:
                                   description: Key that will be mounted as environment
                                     variable
                                   type: string
-                                mounType:
-                                  description: Type specifies if its a ConfigMap or
-                                    Secret
+                                mountType:
                                   type: string
                                 source:
                                   description: Source of the Secret or ConfigMap
@@ -1687,8 +1683,7 @@ spec:
                           key:
                             description: Key that will be mounted as environment variable
                             type: string
-                          mounType:
-                            description: Type specifies if its a ConfigMap or Secret
+                          mountType:
                             type: string
                           source:
                             description: Source of the Secret or ConfigMap
@@ -2119,8 +2114,7 @@ spec:
                           key:
                             description: Key that will be mounted as environment variable
                             type: string
-                          mounType:
-                            description: Type specifies if its a ConfigMap or Secret
+                          mountType:
                             type: string
                           source:
                             description: Source of the Secret or ConfigMap
@@ -2153,8 +2147,7 @@ spec:
                         key:
                           description: Key that will be mounted as environment variable
                           type: string
-                        mounType:
-                          description: Type specifies if its a ConfigMap or Secret
+                        mountType:
                           type: string
                         source:
                           description: Source of the Secret or ConfigMap
@@ -2180,8 +2173,7 @@ spec:
                         key:
                           description: Key that will be mounted as environment variable
                           type: string
-                        mounType:
-                          description: Type specifies if its a ConfigMap or Secret
+                        mountType:
                           type: string
                         source:
                           description: Source of the Secret or ConfigMap
@@ -2207,8 +2199,7 @@ spec:
                         key:
                           description: Key that will be mounted as environment variable
                           type: string
-                        mounType:
-                          description: Type specifies if its a ConfigMap or Secret
+                        mountType:
                           type: string
                         source:
                           description: Source of the Secret or ConfigMap
@@ -2234,8 +2225,7 @@ spec:
                         key:
                           description: Key that will be mounted as environment variable
                           type: string
-                        mounType:
-                          description: Type specifies if its a ConfigMap or Secret
+                        mountType:
                           type: string
                         source:
                           description: Source of the Secret or ConfigMap
@@ -2261,8 +2251,7 @@ spec:
                         key:
                           description: Key that will be mounted as environment variable
                           type: string
-                        mounType:
-                          description: Type specifies if its a ConfigMap or Secret
+                        mountType:
                           type: string
                         source:
                           description: Source of the Secret or ConfigMap
@@ -2288,8 +2277,62 @@ spec:
                         key:
                           description: Key that will be mounted as environment variable
                           type: string
-                        mounType:
+                        mountType:
+                          type: string
+                        source:
+                          description: Source of the Secret or ConfigMap
+                          type: string
+                        type:
                           description: Type specifies if its a ConfigMap or Secret
+                          type: string
+                        value:
+                          description: Value of the paramater, should not contain
+                            secret values
+                          type: string
+                      type: object
+                  type: object
+                general:
+                  properties:
+                    instanceIP:
+                      properties:
+                        fromKey:
+                          description: Key to select from in ConfigMap or Secret
+                          type: string
+                        generate:
+                          description: "Config or EnvVar \tDestination Destination
+                            `json:\"destination,omitempty\"` Generate is specified
+                            if a secret or configmap data needs to be randomly generated"
+                          type: string
+                        key:
+                          description: Key that will be mounted as environment variable
+                          type: string
+                        mountType:
+                          type: string
+                        source:
+                          description: Source of the Secret or ConfigMap
+                          type: string
+                        type:
+                          description: Type specifies if its a ConfigMap or Secret
+                          type: string
+                        value:
+                          description: Value of the paramater, should not contain
+                            secret values
+                          type: string
+                      type: object
+                    url:
+                      properties:
+                        fromKey:
+                          description: Key to select from in ConfigMap or Secret
+                          type: string
+                        generate:
+                          description: "Config or EnvVar \tDestination Destination
+                            `json:\"destination,omitempty\"` Generate is specified
+                            if a secret or configmap data needs to be randomly generated"
+                          type: string
+                        key:
+                          description: Key that will be mounted as environment variable
+                          type: string
+                        mountType:
                           type: string
                         source:
                           description: Source of the Secret or ConfigMap
@@ -2337,8 +2380,7 @@ spec:
                         key:
                           description: Key that will be mounted as environment variable
                           type: string
-                        mounType:
-                          description: Type specifies if its a ConfigMap or Secret
+                        mountType:
                           type: string
                         source:
                           description: Source of the Secret or ConfigMap
@@ -2365,8 +2407,7 @@ spec:
                         key:
                           description: Key that will be mounted as environment variable
                           type: string
-                        mounType:
-                          description: Type specifies if its a ConfigMap or Secret
+                        mountType:
                           type: string
                         source:
                           description: Source of the Secret or ConfigMap
@@ -2392,8 +2433,7 @@ spec:
                         key:
                           description: Key that will be mounted as environment variable
                           type: string
-                        mounType:
-                          description: Type specifies if its a ConfigMap or Secret
+                        mountType:
                           type: string
                         source:
                           description: Source of the Secret or ConfigMap
@@ -2419,8 +2459,7 @@ spec:
                         key:
                           description: Key that will be mounted as environment variable
                           type: string
-                        mounType:
-                          description: Type specifies if its a ConfigMap or Secret
+                        mountType:
                           type: string
                         source:
                           description: Source of the Secret or ConfigMap
@@ -2446,8 +2485,7 @@ spec:
                         key:
                           description: Key that will be mounted as environment variable
                           type: string
-                        mounType:
-                          description: Type specifies if its a ConfigMap or Secret
+                        mountType:
                           type: string
                         source:
                           description: Source of the Secret or ConfigMap
@@ -2482,8 +2520,7 @@ spec:
                         key:
                           description: Key that will be mounted as environment variable
                           type: string
-                        mounType:
-                          description: Type specifies if its a ConfigMap or Secret
+                        mountType:
                           type: string
                         source:
                           description: Source of the Secret or ConfigMap
@@ -2509,8 +2546,7 @@ spec:
                         key:
                           description: Key that will be mounted as environment variable
                           type: string
-                        mounType:
-                          description: Type specifies if its a ConfigMap or Secret
+                        mountType:
                           type: string
                         source:
                           description: Source of the Secret or ConfigMap
@@ -2536,8 +2572,7 @@ spec:
                         key:
                           description: Key that will be mounted as environment variable
                           type: string
-                        mounType:
-                          description: Type specifies if its a ConfigMap or Secret
+                        mountType:
                           type: string
                         source:
                           description: Source of the Secret or ConfigMap
@@ -2563,8 +2598,7 @@ spec:
                         key:
                           description: Key that will be mounted as environment variable
                           type: string
-                        mounType:
-                          description: Type specifies if its a ConfigMap or Secret
+                        mountType:
                           type: string
                         source:
                           description: Source of the Secret or ConfigMap

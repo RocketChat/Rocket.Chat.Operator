@@ -18,6 +18,7 @@ package controllers
 
 import (
 	"context"
+	"fmt"
 
 	appsv1alpha1 "git.indie.host/operators/rocketchat-operator/api/v1alpha1"
 	"github.com/go-logr/logr"
@@ -70,39 +71,18 @@ func (r *RocketchatReconciler) Reconcile(req ctrl.Request) (ctrl.Result, error) 
 		return ctrl.Result{}, ignoreNotFound(err)
 	}
 
-	// Application is in the process of being deleted, so no need to do anything.
-	/* 		if app.DeletionTimestamp != nil {
-		return ctrl.Result{}, nil
-	} */
-
 	app.SetDefaults()
 
 	objects := app.Spec.Settings.GetObjects()
 
 	for _, obj := range objects {
+		fmt.Println(obj)
 		s := instance.NewObjectSyncer(obj, app, r)
 
 		if err := syncer.Sync(context.TODO(), s, r.Recorder); err != nil {
 			return ctrl.Result{}, err
 		}
 	}
-
-	//	objs := app.Spec.App.GetObjects()
-
-	//	for _, obj := range objs {
-	//		s := object.NewObjectSyncer(obj, app, r)
-
-	//		if err := syncer.Sync(context.TODO(), s, r.Recorder); err != nil {
-	//			return ctrl.Result{}, err
-	//		}
-	//	}
-
-	//	instanceComponents := app.GetComponents()
-
-	//	var syncers []syncer.Interface
-	//	for _, c := range instanceComponents {
-	//		syncers = append(syncers, instance.NewSyncer(c, r, app)...)
-	//	}
 
 	syncers := instance.NewSyncers(app, r, app)
 
