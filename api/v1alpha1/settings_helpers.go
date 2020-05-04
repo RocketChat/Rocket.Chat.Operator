@@ -17,8 +17,6 @@ limitations under the License.
 package v1alpha1
 
 import (
-	"fmt"
-
 	instance "k8s.libre.sh/instance"
 	meta "k8s.libre.sh/meta"
 	parameters "k8s.libre.sh/parameters"
@@ -79,7 +77,6 @@ func (s *Settings) GetParameters() parameters.Parameters {
 				p.Type = parameters.ConfigParameter
 			}
 		}
-		fmt.Println(p)
 	}
 	if err != nil {
 

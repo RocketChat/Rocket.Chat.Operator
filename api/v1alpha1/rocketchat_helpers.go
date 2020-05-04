@@ -9,11 +9,17 @@ func (o *Rocketchat) GetOwner() interfaces.Object { return o }
 func (o *Rocketchat) GetName() string             { return o.Name }
 func (o *Rocketchat) GetNamespace() string        { return o.Namespace }
 func (o *Rocketchat) GetInstance() string         { return o.Name }
+func (o *Rocketchat) SetInstance(s string)        {}
 func (o *Rocketchat) GetVersion() string          { return o.Spec.Version }
+func (o *Rocketchat) SetVersion(s string)         {}
 func (o *Rocketchat) GetComponent() string        { return "instance" }
+func (o *Rocketchat) SetComponent(s string)       {}
 func (o *Rocketchat) GetPartOf() string           { return "rocketchat" }
+func (o *Rocketchat) SetPartOf(s string)          {}
 func (o *Rocketchat) GetManagedBy() string        { return "rocketchat-operator" }
+func (o *Rocketchat) SetManagedBy(s string)       {}
 func (o *Rocketchat) GetApplication() string      { return "rocketchat" }
+func (o *Rocketchat) SetApplication(s string)     {}
 
 func (o *Rocketchat) GetSettings() instance.Settings {
 	return o.Spec.Settings

@@ -18,7 +18,6 @@ package controllers
 
 import (
 	"context"
-	"fmt"
 
 	appsv1alpha1 "git.indie.host/operators/rocketchat-operator/api/v1alpha1"
 	"github.com/go-logr/logr"
@@ -76,7 +75,6 @@ func (r *RocketchatReconciler) Reconcile(req ctrl.Request) (ctrl.Result, error) 
 	objects := app.Spec.Settings.GetObjects()
 
 	for _, obj := range objects {
-		fmt.Println(obj)
 		s := instance.NewObjectSyncer(obj, app, r)
 
 		if err := syncer.Sync(context.TODO(), s, r.Recorder); err != nil {
