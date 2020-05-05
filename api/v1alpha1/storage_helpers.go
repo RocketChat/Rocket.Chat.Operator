@@ -16,24 +16,8 @@ limitations under the License.
 
 package v1alpha1
 
-import parameters "k8s.libre.sh/parameters"
-
 func (s *FileUpload) SetDefaults() {
 }
 
 func (s *Storage) SetDefaults() {
-}
-
-type ObjectStore struct {
-	//	FileUpload_S3_Acl
-	//	FileUpload_S3_CDN
-	//	FileUpload_S3_BucketURL
-	//	FileUpload_S3_SignatureVersion
-	//	FileUpload_S3_URLExpiryTimeSpan
-	//	FileUpload_S3_Proxy_Avatars
-	//	FileUpload_S3_Proxy_Uploads
-	Bucket    parameters.Parameter `json:"bucket,omitempty" env:"OVERWRITE_SETTING_FileUpload_S3_Bucket"`
-	Region    parameters.Parameter `json:"region,omitempty" env:"OVERWRITE_SETTING_FileUpload_S3_Region"`
-	Endpoint  parameters.Parameter `json:"endpoint,omitempty" env:"OVERWRITE_SETTING_FileUpload_S3_BucketURL"`
-	PathStyle parameters.Parameter `json:"pathStyle,omitempty" env:"OVERWRITE_SETTING_FileUpload_S3_ForcePathStyle"`
 }

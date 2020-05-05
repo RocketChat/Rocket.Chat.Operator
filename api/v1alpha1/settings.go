@@ -22,29 +22,53 @@ import (
 )
 
 type SMTP struct {
+	SMTPConfig  `json:",inline"`
+	SMTPSecrets `json:",inline"`
+}
+
+type SMTPConfig struct {
 	//	SMTP_IgnoreTLS
 	//	SMTP_Pool
 	Host      parameters.Parameter `json:"host,omitempty" env:"OVERWRITE_SETTING_SMTP_Host"`
 	Port      parameters.Parameter `json:"port,omitempty" env:"OVERWRITE_SETTING_SMTP_Port"`
-	Username  parameters.Parameter `json:"username,omitempty" env:"OVERWRITE_SETTING_SMTP_Username"`
 	FromEmail parameters.Parameter `json:"fromEmail,omitempty" env:"OVERWRITE_SETTING_From_Email"`
-	Password  parameters.Parameter `json:"passwor,omitempty" env:"OVERWRITE_SETTING_SMTP_Password"`
+	Username  parameters.Parameter `json:"username,omitempty" env:"OVERWRITE_SETTING_SMTP_Username"`
+}
+
+type SMTPSecrets struct {
+	Password parameters.Parameter `json:"passwor,omitempty" env:"OVERWRITE_SETTING_SMTP_Password"`
 }
 
 type Database struct {
-	URL              parameters.Parameter `json:"url,omitempty" env:"MONGO_URL"`
-	OplogURL         parameters.Parameter `json:"oplogURL,omitempty" env:"MONGO_OPLOG_URL"`
+	DatabaseConfig  `json:",inline"`
+	DatabaseSecrets `json:",inline"`
+}
+
+type DatabaseConfig struct {
 	ReplicaSet       parameters.Parameter `json:"replicaSet,omitempty" env:"MONGO_REPLICASET"`
 	AuthenticationDB parameters.Parameter `json:"authenticationDB,omitempty" env:"MONGO_AUTHDB"`
 	Username         parameters.Parameter `json:"password,omitempty" env:"MONGO_USERNAME"`
-	Password         parameters.Parameter `json:"username,omitempty" env:"MONGO_PASSWORD"`
+}
+
+type DatabaseSecrets struct {
+	Password parameters.Parameter `json:"username,omitempty" env:"MONGO_PASSWORD"`
+	URL      parameters.Parameter `json:"url,omitempty" env:"MONGO_URL"`
+	OplogURL parameters.Parameter `json:"oplogURL,omitempty" env:"MONGO_OPLOG_URL"`
 }
 
 type General struct {
+	GeneralConfig  `json:",inline"`
+	GeneralSecrets `json:",inline"`
+}
+
+type GeneralConfig struct {
 	URL        parameters.Parameter `json:"url,omitempty" env:"ROOT_URL"`
 	InstanceIP parameters.Parameter `json:"instanceIP,omitempty" env:"INSTANCE_IP"`
-	Username   parameters.Parameter `json:"username,omitempty" env:"ADMIN_USERNAME"`
-	Password   parameters.Parameter `json:"password,omitempty" env:"ADMIN_PASSWORD"`
+	Username   parameters.Parameter `json:"password,omitempty" env:"ADMIN_USERNAME"`
+}
+
+type GeneralSecrets struct {
+	Password parameters.Parameter `json:"username,omitempty" env:"ADMIN_PASS"`
 }
 
 type Settings struct {
