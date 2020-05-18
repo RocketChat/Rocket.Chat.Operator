@@ -68,7 +68,7 @@ spec:
                 deployment:
                   properties:
                     affinity:
-                      description: Affinity is a group of affinity scheduling rules.
+                      description: If specified, the pod's scheduling constraints
                       properties:
                         nodeAffinity:
                           description: Describes node affinity scheduling rules for
@@ -694,41 +694,54 @@ spec:
                           type: object
                       type: object
                     args:
+                      description: 'Arguments to the entrypoint. The docker image''s
+                        CMD is used if this is not provided. Variable references $(VAR_NAME)
+                        are expanded using the container''s environment. If a variable
+                        cannot be resolved, the reference in the input string will
+                        be unchanged. The $(VAR_NAME) syntax can be escaped with a
+                        double $$, ie: $$(VAR_NAME). Escaped references will never
+                        be expanded, regardless of whether the variable exists or
+                        not. Cannot be updated. More info: https://kubernetes.io/docs/tasks/inject-data-application/define-command-argument-container/#running-a-command-in-a-shell'
                       items:
                         type: string
                       type: array
                     extraContainers:
+                      description: List of containers belonging to the pod. Containers
+                        cannot currently be added or removed. There must be at least
+                        one container in a Pod. Cannot be updated.
                       items:
                         properties:
                           args:
+                            description: 'Arguments to the entrypoint. The docker
+                              image''s CMD is used if this is not provided. Variable
+                              references $(VAR_NAME) are expanded using the container''s
+                              environment. If a variable cannot be resolved, the reference
+                              in the input string will be unchanged. The $(VAR_NAME)
+                              syntax can be escaped with a double $$, ie: $$(VAR_NAME).
+                              Escaped references will never be expanded, regardless
+                              of whether the variable exists or not. Cannot be updated.
+                              More info: https://kubernetes.io/docs/tasks/inject-data-application/define-command-argument-container/#running-a-command-in-a-shell'
                             items:
                               type: string
                             type: array
                           image:
+                            description: 'Docker image name. More info: https://kubernetes.io/docs/concepts/containers/images
+                              This field is optional to allow higher level config
+                              management to default or override container images in
+                              workload controllers like Deployments and StatefulSets.'
                             type: string
                           imagePullPolicy:
-                            description: PullPolicy describes a policy for if/when
-                              to pull a container image
+                            description: 'Image pull policy. One of Always, Never,
+                              IfNotPresent. Defaults to Always if :latest tag is specified,
+                              or IfNotPresent otherwise. Cannot be updated. More info:
+                              https://kubernetes.io/docs/concepts/containers/images#updating-images'
                             type: string
-                          imagePullSecrets:
-                            items:
-                              description: LocalObjectReference contains enough information
-                                to let you locate the referenced object inside the
-                                same namespace.
-                              properties:
-                                name:
-                                  description: 'Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-                                    TODO: Add other useful fields. apiVersion, kind,
-                                    uid?'
-                                  type: string
-                              type: object
-                            type: array
                           inline:
                             properties:
                               livenessProbe:
-                                description: Probe describes a health check to be
-                                  performed against a container to determine whether
-                                  it is alive or ready to receive traffic.
+                                description: 'Periodic probe of container liveness.
+                                  Container will be restarted if the probe fails.
+                                  Cannot be updated. More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes'
                                 properties:
                                   exec:
                                     description: One and only one of the following
@@ -850,9 +863,9 @@ spec:
                                     type: integer
                                 type: object
                               readinessProbe:
-                                description: Probe describes a health check to be
-                                  performed against a container to determine whether
-                                  it is alive or ready to receive traffic.
+                                description: 'Periodic probe of container liveness.
+                                  Container will be restarted if the probe fails.
+                                  Cannot be updated. More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes'
                                 properties:
                                   exec:
                                     description: One and only one of the following
@@ -975,31 +988,40 @@ spec:
                                 type: object
                             type: object
                           name:
+                            description: Name of the container specified as a DNS_LABEL.
+                              Each container in a pod must have a unique name (DNS_LABEL).
+                              Cannot be updated.
                             type: string
                           parameters:
+                            description: ConfigSpec defines a list of parameters and
+                              some sources from which those parameters can be fetched
+                              It can be used in the conta
                             properties:
                               configRefs:
+                                description: ConfigRefs is a list of configmaps in
+                                  the name namespace
                                 items:
                                   type: string
                                 type: array
                               parameters:
+                                description: Parameters is a list of parameters
                                 items:
                                   properties:
                                     fromKey:
-                                      description: Key to select from in ConfigMap
-                                        or Secret
+                                      description: Key to select from the source
                                       type: string
                                     generate:
-                                      description: Generate is specified if a secret
-                                        or configmap data needs to be randomly generated
+                                      description: Generate if specified defines how
+                                        the parameter value will be generated
                                       type: string
                                     key:
-                                      description: Key that will be mounted as environment
-                                        variable
+                                      description: Key of the parameter, can be mounted
+                                        as as an environment variable, used in template
+                                        or as in the data fied of configmap/secret
                                       type: string
                                     mountFrom:
-                                      description: MountFrom specifies where the parameter
-                                        will be mounted as file
+                                      description: MountPath specifies where the parameter
+                                        will be mounted as a file
                                       properties:
                                         path:
                                           type: string
@@ -1007,27 +1029,39 @@ spec:
                                           type: string
                                       type: object
                                     mountType:
+                                      description: MountType defined how the parameter
+                                        will be mounted in the pod Defaults to EnvFile
                                       type: string
                                     ref:
-                                      description: Ref is a reference to a local object,
-                                        set ParameterType to define the object
+                                      description: Name of the referent.
                                       type: string
                                     type:
-                                      description: Type specifies if its a ConfigMap
-                                        or Secret
+                                      description: Type of the source othe parameter
+                                        Defaults to the parameter type if not specified
                                       type: string
                                     value:
                                       description: Value of the paramater, should
-                                        not contain secret values
+                                        not contain secret values It can be a template,
+                                        ParameterType should be template
                                       type: string
                                   type: object
                                 type: array
                               secretRefs:
+                                description: SecretRefs is a list of secrets in the
+                                  name namespace
                                 items:
                                   type: string
                                 type: array
                             type: object
                           ports:
+                            description: List of ports to expose from the container.
+                              Exposing a port here gives the system additional information
+                              about the network connections a container uses, but
+                              is primarily informational. Not specifying a port here
+                              DOES NOT prevent that port from being exposed. Any port
+                              which is listening on the default "0.0.0.0" address
+                              inside a container will be accessible from the network.
+                              Cannot be updated.
                             items:
                               description: ContainerPort represents a network port
                                 in a single container.
@@ -1067,12 +1101,23 @@ spec:
                         type: object
                       type: array
                     image:
+                      description: 'Docker image name. More info: https://kubernetes.io/docs/concepts/containers/images
+                        This field is optional to allow higher level config management
+                        to default or override container images in workload controllers
+                        like Deployments and StatefulSets.'
                       type: string
                     imagePullPolicy:
-                      description: PullPolicy describes a policy for if/when to pull
-                        a container image
+                      description: 'Image pull policy. One of Always, Never, IfNotPresent.
+                        Defaults to Always if :latest tag is specified, or IfNotPresent
+                        otherwise. Cannot be updated. More info: https://kubernetes.io/docs/concepts/containers/images#updating-images'
                       type: string
                     imagePullSecrets:
+                      description: 'ImagePullSecrets is an optional list of references
+                        to secrets in the same namespace to use for pulling any of
+                        the images used by this PodSpec. If specified, these secrets
+                        will be passed to individual puller implementations for them
+                        to use. For example, in the case of docker, only DockerConfig
+                        type secrets are honored. More info: https://kubernetes.io/docs/concepts/containers/images#specifying-imagepullsecrets-on-a-pod'
                       items:
                         description: LocalObjectReference contains enough information
                           to let you locate the referenced object inside the same
@@ -1085,37 +1130,53 @@ spec:
                         type: object
                       type: array
                     initContainers:
+                      description: 'List of initialization containers belonging to
+                        the pod. Init containers are executed in order prior to containers
+                        being started. If any init container fails, the pod is considered
+                        to have failed and is handled according to its restartPolicy.
+                        The name for an init container or normal container must be
+                        unique among all containers. Init containers may not have
+                        Lifecycle actions, Readiness probes, Liveness probes, or Startup
+                        probes. The resourceRequirements of an init container are
+                        taken into account during scheduling by finding the highest
+                        request/limit for each resource type, and then using the max
+                        of of that value or the sum of the normal containers. Limits
+                        are applied to init containers in a similar fashion. Init
+                        containers cannot currently be added or removed. Cannot be
+                        updated. More info: https://kubernetes.io/docs/concepts/workloads/pods/init-containers/'
                       items:
                         properties:
                           args:
+                            description: 'Arguments to the entrypoint. The docker
+                              image''s CMD is used if this is not provided. Variable
+                              references $(VAR_NAME) are expanded using the container''s
+                              environment. If a variable cannot be resolved, the reference
+                              in the input string will be unchanged. The $(VAR_NAME)
+                              syntax can be escaped with a double $$, ie: $$(VAR_NAME).
+                              Escaped references will never be expanded, regardless
+                              of whether the variable exists or not. Cannot be updated.
+                              More info: https://kubernetes.io/docs/tasks/inject-data-application/define-command-argument-container/#running-a-command-in-a-shell'
                             items:
                               type: string
                             type: array
                           image:
+                            description: 'Docker image name. More info: https://kubernetes.io/docs/concepts/containers/images
+                              This field is optional to allow higher level config
+                              management to default or override container images in
+                              workload controllers like Deployments and StatefulSets.'
                             type: string
                           imagePullPolicy:
-                            description: PullPolicy describes a policy for if/when
-                              to pull a container image
+                            description: 'Image pull policy. One of Always, Never,
+                              IfNotPresent. Defaults to Always if :latest tag is specified,
+                              or IfNotPresent otherwise. Cannot be updated. More info:
+                              https://kubernetes.io/docs/concepts/containers/images#updating-images'
                             type: string
-                          imagePullSecrets:
-                            items:
-                              description: LocalObjectReference contains enough information
-                                to let you locate the referenced object inside the
-                                same namespace.
-                              properties:
-                                name:
-                                  description: 'Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-                                    TODO: Add other useful fields. apiVersion, kind,
-                                    uid?'
-                                  type: string
-                              type: object
-                            type: array
                           inline:
                             properties:
                               livenessProbe:
-                                description: Probe describes a health check to be
-                                  performed against a container to determine whether
-                                  it is alive or ready to receive traffic.
+                                description: 'Periodic probe of container liveness.
+                                  Container will be restarted if the probe fails.
+                                  Cannot be updated. More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes'
                                 properties:
                                   exec:
                                     description: One and only one of the following
@@ -1237,9 +1298,9 @@ spec:
                                     type: integer
                                 type: object
                               readinessProbe:
-                                description: Probe describes a health check to be
-                                  performed against a container to determine whether
-                                  it is alive or ready to receive traffic.
+                                description: 'Periodic probe of container liveness.
+                                  Container will be restarted if the probe fails.
+                                  Cannot be updated. More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes'
                                 properties:
                                   exec:
                                     description: One and only one of the following
@@ -1362,31 +1423,40 @@ spec:
                                 type: object
                             type: object
                           name:
+                            description: Name of the container specified as a DNS_LABEL.
+                              Each container in a pod must have a unique name (DNS_LABEL).
+                              Cannot be updated.
                             type: string
                           parameters:
+                            description: ConfigSpec defines a list of parameters and
+                              some sources from which those parameters can be fetched
+                              It can be used in the conta
                             properties:
                               configRefs:
+                                description: ConfigRefs is a list of configmaps in
+                                  the name namespace
                                 items:
                                   type: string
                                 type: array
                               parameters:
+                                description: Parameters is a list of parameters
                                 items:
                                   properties:
                                     fromKey:
-                                      description: Key to select from in ConfigMap
-                                        or Secret
+                                      description: Key to select from the source
                                       type: string
                                     generate:
-                                      description: Generate is specified if a secret
-                                        or configmap data needs to be randomly generated
+                                      description: Generate if specified defines how
+                                        the parameter value will be generated
                                       type: string
                                     key:
-                                      description: Key that will be mounted as environment
-                                        variable
+                                      description: Key of the parameter, can be mounted
+                                        as as an environment variable, used in template
+                                        or as in the data fied of configmap/secret
                                       type: string
                                     mountFrom:
-                                      description: MountFrom specifies where the parameter
-                                        will be mounted as file
+                                      description: MountPath specifies where the parameter
+                                        will be mounted as a file
                                       properties:
                                         path:
                                           type: string
@@ -1394,27 +1464,39 @@ spec:
                                           type: string
                                       type: object
                                     mountType:
+                                      description: MountType defined how the parameter
+                                        will be mounted in the pod Defaults to EnvFile
                                       type: string
                                     ref:
-                                      description: Ref is a reference to a local object,
-                                        set ParameterType to define the object
+                                      description: Name of the referent.
                                       type: string
                                     type:
-                                      description: Type specifies if its a ConfigMap
-                                        or Secret
+                                      description: Type of the source othe parameter
+                                        Defaults to the parameter type if not specified
                                       type: string
                                     value:
                                       description: Value of the paramater, should
-                                        not contain secret values
+                                        not contain secret values It can be a template,
+                                        ParameterType should be template
                                       type: string
                                   type: object
                                 type: array
                               secretRefs:
+                                description: SecretRefs is a list of secrets in the
+                                  name namespace
                                 items:
                                   type: string
                                 type: array
                             type: object
                           ports:
+                            description: List of ports to expose from the container.
+                              Exposing a port here gives the system additional information
+                              about the network connections a container uses, but
+                              is primarily informational. Not specifying a port here
+                              DOES NOT prevent that port from being exposed. Any port
+                              which is listening on the default "0.0.0.0" address
+                              inside a container will be accessible from the network.
+                              Cannot be updated.
                             items:
                               description: ContainerPort represents a network port
                                 in a single container.
@@ -1456,9 +1538,9 @@ spec:
                     inline:
                       properties:
                         livenessProbe:
-                          description: Probe describes a health check to be performed
-                            against a container to determine whether it is alive or
-                            ready to receive traffic.
+                          description: 'Periodic probe of container liveness. Container
+                            will be restarted if the probe fails. Cannot be updated.
+                            More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes'
                           properties:
                             exec:
                               description: One and only one of the following should
@@ -1574,9 +1656,9 @@ spec:
                               type: integer
                           type: object
                         readinessProbe:
-                          description: Probe describes a health check to be performed
-                            against a container to determine whether it is alive or
-                            ready to receive traffic.
+                          description: 'Periodic probe of container liveness. Container
+                            will be restarted if the probe fails. Cannot be updated.
+                            More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes'
                           properties:
                             exec:
                               description: One and only one of the following should
@@ -1708,34 +1790,48 @@ spec:
                           type: string
                       type: object
                     name:
+                      description: Name of the container specified as a DNS_LABEL.
+                        Each container in a pod must have a unique name (DNS_LABEL).
+                        Cannot be updated.
                       type: string
                     nodeSelector:
                       additionalProperties:
                         type: string
+                      description: 'NodeSelector is a selector which must be true
+                        for the pod to fit on a node. Selector which must match a
+                        node''s labels for the pod to be scheduled on that node. More
+                        info: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/'
                       type: object
                     parameters:
+                      description: ConfigSpec defines a list of parameters and some
+                        sources from which those parameters can be fetched It can
+                        be used in the conta
                       properties:
                         configRefs:
+                          description: ConfigRefs is a list of configmaps in the name
+                            namespace
                           items:
                             type: string
                           type: array
                         parameters:
+                          description: Parameters is a list of parameters
                           items:
                             properties:
                               fromKey:
-                                description: Key to select from in ConfigMap or Secret
+                                description: Key to select from the source
                                 type: string
                               generate:
-                                description: Generate is specified if a secret or
-                                  configmap data needs to be randomly generated
+                                description: Generate if specified defines how the
+                                  parameter value will be generated
                                 type: string
                               key:
-                                description: Key that will be mounted as environment
-                                  variable
+                                description: Key of the parameter, can be mounted
+                                  as as an environment variable, used in template
+                                  or as in the data fied of configmap/secret
                                 type: string
                               mountFrom:
-                                description: MountFrom specifies where the parameter
-                                  will be mounted as file
+                                description: MountPath specifies where the parameter
+                                  will be mounted as a file
                                 properties:
                                   path:
                                     type: string
@@ -1743,27 +1839,38 @@ spec:
                                     type: string
                                 type: object
                               mountType:
+                                description: MountType defined how the parameter will
+                                  be mounted in the pod Defaults to EnvFile
                                 type: string
                               ref:
-                                description: Ref is a reference to a local object,
-                                  set ParameterType to define the object
+                                description: Name of the referent.
                                 type: string
                               type:
-                                description: Type specifies if its a ConfigMap or
-                                  Secret
+                                description: Type of the source othe parameter Defaults
+                                  to the parameter type if not specified
                                 type: string
                               value:
                                 description: Value of the paramater, should not contain
-                                  secret values
+                                  secret values It can be a template, ParameterType
+                                  should be template
                                 type: string
                             type: object
                           type: array
                         secretRefs:
+                          description: SecretRefs is a list of secrets in the name
+                            namespace
                           items:
                             type: string
                           type: array
                       type: object
                     ports:
+                      description: List of ports to expose from the container. Exposing
+                        a port here gives the system additional information about
+                        the network connections a container uses, but is primarily
+                        informational. Not specifying a port here DOES NOT prevent
+                        that port from being exposed. Any port which is listening
+                        on the default "0.0.0.0" address inside a container will be
+                        accessible from the network. Cannot be updated.
                       items:
                         description: ContainerPort represents a network port in a
                           single container.
@@ -1821,16 +1928,14 @@ spec:
                           type: object
                       type: object
                     restartPolicy:
-                      description: RestartPolicy describes how the container should
-                        be restarted. Only one of the following restart policies may
-                        be specified. If none of the following policies is specified,
-                        the default one is RestartPolicyAlways.
+                      description: 'Restart policy for all containers within the pod.
+                        One of Always, OnFailure, Never. Default to Always. More info:
+                        https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/#restart-policy'
                       type: string
                     securityContext:
-                      description: PodSecurityContext holds pod-level security attributes
-                        and common container settings. Some fields are also present
-                        in container.securityContext.  Field values of container.securityContext
-                        take precedence over field values of PodSecurityContext.
+                      description: 'SecurityContext holds pod-level security attributes
+                        and common container settings. Optional: Defaults to empty.  See
+                        type description for default values of each field.'
                       properties:
                         fsGroup:
                           description: "A special supplemental group that applies
@@ -2012,6 +2117,7 @@ spec:
                           type: string
                       type: object
                     tolerations:
+                      description: If specified, the pod's tolerations.
                       items:
                         description: The pod this Toleration is attached to tolerates
                           any taint that matches the triple <key,value,effect> using
@@ -2141,18 +2247,20 @@ spec:
                     authenticationDB:
                       properties:
                         fromKey:
-                          description: Key to select from in ConfigMap or Secret
+                          description: Key to select from the source
                           type: string
                         generate:
-                          description: Generate is specified if a secret or configmap
-                            data needs to be randomly generated
+                          description: Generate if specified defines how the parameter
+                            value will be generated
                           type: string
                         key:
-                          description: Key that will be mounted as environment variable
+                          description: Key of the parameter, can be mounted as as
+                            an environment variable, used in template or as in the
+                            data fied of configmap/secret
                           type: string
                         mountFrom:
-                          description: MountFrom specifies where the parameter will
-                            be mounted as file
+                          description: MountPath specifies where the parameter will
+                            be mounted as a file
                           properties:
                             path:
                               type: string
@@ -2160,34 +2268,39 @@ spec:
                               type: string
                           type: object
                         mountType:
+                          description: MountType defined how the parameter will be
+                            mounted in the pod Defaults to EnvFile
                           type: string
                         ref:
-                          description: Ref is a reference to a local object, set ParameterType
-                            to define the object
+                          description: Name of the referent.
                           type: string
                         type:
-                          description: Type specifies if its a ConfigMap or Secret
+                          description: Type of the source othe parameter Defaults
+                            to the parameter type if not specified
                           type: string
                         value:
                           description: Value of the paramater, should not contain
-                            secret values
+                            secret values It can be a template, ParameterType should
+                            be template
                           type: string
                       type: object
                     oplogURL:
                       properties:
                         fromKey:
-                          description: Key to select from in ConfigMap or Secret
+                          description: Key to select from the source
                           type: string
                         generate:
-                          description: Generate is specified if a secret or configmap
-                            data needs to be randomly generated
+                          description: Generate if specified defines how the parameter
+                            value will be generated
                           type: string
                         key:
-                          description: Key that will be mounted as environment variable
+                          description: Key of the parameter, can be mounted as as
+                            an environment variable, used in template or as in the
+                            data fied of configmap/secret
                           type: string
                         mountFrom:
-                          description: MountFrom specifies where the parameter will
-                            be mounted as file
+                          description: MountPath specifies where the parameter will
+                            be mounted as a file
                           properties:
                             path:
                               type: string
@@ -2195,34 +2308,39 @@ spec:
                               type: string
                           type: object
                         mountType:
+                          description: MountType defined how the parameter will be
+                            mounted in the pod Defaults to EnvFile
                           type: string
                         ref:
-                          description: Ref is a reference to a local object, set ParameterType
-                            to define the object
+                          description: Name of the referent.
                           type: string
                         type:
-                          description: Type specifies if its a ConfigMap or Secret
+                          description: Type of the source othe parameter Defaults
+                            to the parameter type if not specified
                           type: string
                         value:
                           description: Value of the paramater, should not contain
-                            secret values
+                            secret values It can be a template, ParameterType should
+                            be template
                           type: string
                       type: object
                     password:
                       properties:
                         fromKey:
-                          description: Key to select from in ConfigMap or Secret
+                          description: Key to select from the source
                           type: string
                         generate:
-                          description: Generate is specified if a secret or configmap
-                            data needs to be randomly generated
+                          description: Generate if specified defines how the parameter
+                            value will be generated
                           type: string
                         key:
-                          description: Key that will be mounted as environment variable
+                          description: Key of the parameter, can be mounted as as
+                            an environment variable, used in template or as in the
+                            data fied of configmap/secret
                           type: string
                         mountFrom:
-                          description: MountFrom specifies where the parameter will
-                            be mounted as file
+                          description: MountPath specifies where the parameter will
+                            be mounted as a file
                           properties:
                             path:
                               type: string
@@ -2230,34 +2348,39 @@ spec:
                               type: string
                           type: object
                         mountType:
+                          description: MountType defined how the parameter will be
+                            mounted in the pod Defaults to EnvFile
                           type: string
                         ref:
-                          description: Ref is a reference to a local object, set ParameterType
-                            to define the object
+                          description: Name of the referent.
                           type: string
                         type:
-                          description: Type specifies if its a ConfigMap or Secret
+                          description: Type of the source othe parameter Defaults
+                            to the parameter type if not specified
                           type: string
                         value:
                           description: Value of the paramater, should not contain
-                            secret values
+                            secret values It can be a template, ParameterType should
+                            be template
                           type: string
                       type: object
                     replicaSet:
                       properties:
                         fromKey:
-                          description: Key to select from in ConfigMap or Secret
+                          description: Key to select from the source
                           type: string
                         generate:
-                          description: Generate is specified if a secret or configmap
-                            data needs to be randomly generated
+                          description: Generate if specified defines how the parameter
+                            value will be generated
                           type: string
                         key:
-                          description: Key that will be mounted as environment variable
+                          description: Key of the parameter, can be mounted as as
+                            an environment variable, used in template or as in the
+                            data fied of configmap/secret
                           type: string
                         mountFrom:
-                          description: MountFrom specifies where the parameter will
-                            be mounted as file
+                          description: MountPath specifies where the parameter will
+                            be mounted as a file
                           properties:
                             path:
                               type: string
@@ -2265,34 +2388,39 @@ spec:
                               type: string
                           type: object
                         mountType:
+                          description: MountType defined how the parameter will be
+                            mounted in the pod Defaults to EnvFile
                           type: string
                         ref:
-                          description: Ref is a reference to a local object, set ParameterType
-                            to define the object
+                          description: Name of the referent.
                           type: string
                         type:
-                          description: Type specifies if its a ConfigMap or Secret
+                          description: Type of the source othe parameter Defaults
+                            to the parameter type if not specified
                           type: string
                         value:
                           description: Value of the paramater, should not contain
-                            secret values
+                            secret values It can be a template, ParameterType should
+                            be template
                           type: string
                       type: object
                     url:
                       properties:
                         fromKey:
-                          description: Key to select from in ConfigMap or Secret
+                          description: Key to select from the source
                           type: string
                         generate:
-                          description: Generate is specified if a secret or configmap
-                            data needs to be randomly generated
+                          description: Generate if specified defines how the parameter
+                            value will be generated
                           type: string
                         key:
-                          description: Key that will be mounted as environment variable
+                          description: Key of the parameter, can be mounted as as
+                            an environment variable, used in template or as in the
+                            data fied of configmap/secret
                           type: string
                         mountFrom:
-                          description: MountFrom specifies where the parameter will
-                            be mounted as file
+                          description: MountPath specifies where the parameter will
+                            be mounted as a file
                           properties:
                             path:
                               type: string
@@ -2300,34 +2428,39 @@ spec:
                               type: string
                           type: object
                         mountType:
+                          description: MountType defined how the parameter will be
+                            mounted in the pod Defaults to EnvFile
                           type: string
                         ref:
-                          description: Ref is a reference to a local object, set ParameterType
-                            to define the object
+                          description: Name of the referent.
                           type: string
                         type:
-                          description: Type specifies if its a ConfigMap or Secret
+                          description: Type of the source othe parameter Defaults
+                            to the parameter type if not specified
                           type: string
                         value:
                           description: Value of the paramater, should not contain
-                            secret values
+                            secret values It can be a template, ParameterType should
+                            be template
                           type: string
                       type: object
                     username:
                       properties:
                         fromKey:
-                          description: Key to select from in ConfigMap or Secret
+                          description: Key to select from the source
                           type: string
                         generate:
-                          description: Generate is specified if a secret or configmap
-                            data needs to be randomly generated
+                          description: Generate if specified defines how the parameter
+                            value will be generated
                           type: string
                         key:
-                          description: Key that will be mounted as environment variable
+                          description: Key of the parameter, can be mounted as as
+                            an environment variable, used in template or as in the
+                            data fied of configmap/secret
                           type: string
                         mountFrom:
-                          description: MountFrom specifies where the parameter will
-                            be mounted as file
+                          description: MountPath specifies where the parameter will
+                            be mounted as a file
                           properties:
                             path:
                               type: string
@@ -2335,17 +2468,20 @@ spec:
                               type: string
                           type: object
                         mountType:
+                          description: MountType defined how the parameter will be
+                            mounted in the pod Defaults to EnvFile
                           type: string
                         ref:
-                          description: Ref is a reference to a local object, set ParameterType
-                            to define the object
+                          description: Name of the referent.
                           type: string
                         type:
-                          description: Type specifies if its a ConfigMap or Secret
+                          description: Type of the source othe parameter Defaults
+                            to the parameter type if not specified
                           type: string
                         value:
                           description: Value of the paramater, should not contain
-                            secret values
+                            secret values It can be a template, ParameterType should
+                            be template
                           type: string
                       type: object
                   type: object
@@ -2354,18 +2490,20 @@ spec:
                     instanceIP:
                       properties:
                         fromKey:
-                          description: Key to select from in ConfigMap or Secret
+                          description: Key to select from the source
                           type: string
                         generate:
-                          description: Generate is specified if a secret or configmap
-                            data needs to be randomly generated
+                          description: Generate if specified defines how the parameter
+                            value will be generated
                           type: string
                         key:
-                          description: Key that will be mounted as environment variable
+                          description: Key of the parameter, can be mounted as as
+                            an environment variable, used in template or as in the
+                            data fied of configmap/secret
                           type: string
                         mountFrom:
-                          description: MountFrom specifies where the parameter will
-                            be mounted as file
+                          description: MountPath specifies where the parameter will
+                            be mounted as a file
                           properties:
                             path:
                               type: string
@@ -2373,34 +2511,39 @@ spec:
                               type: string
                           type: object
                         mountType:
+                          description: MountType defined how the parameter will be
+                            mounted in the pod Defaults to EnvFile
                           type: string
                         ref:
-                          description: Ref is a reference to a local object, set ParameterType
-                            to define the object
+                          description: Name of the referent.
                           type: string
                         type:
-                          description: Type specifies if its a ConfigMap or Secret
+                          description: Type of the source othe parameter Defaults
+                            to the parameter type if not specified
                           type: string
                         value:
                           description: Value of the paramater, should not contain
-                            secret values
+                            secret values It can be a template, ParameterType should
+                            be template
                           type: string
                       type: object
                     password:
                       properties:
                         fromKey:
-                          description: Key to select from in ConfigMap or Secret
+                          description: Key to select from the source
                           type: string
                         generate:
-                          description: Generate is specified if a secret or configmap
-                            data needs to be randomly generated
+                          description: Generate if specified defines how the parameter
+                            value will be generated
                           type: string
                         key:
-                          description: Key that will be mounted as environment variable
+                          description: Key of the parameter, can be mounted as as
+                            an environment variable, used in template or as in the
+                            data fied of configmap/secret
                           type: string
                         mountFrom:
-                          description: MountFrom specifies where the parameter will
-                            be mounted as file
+                          description: MountPath specifies where the parameter will
+                            be mounted as a file
                           properties:
                             path:
                               type: string
@@ -2408,34 +2551,39 @@ spec:
                               type: string
                           type: object
                         mountType:
+                          description: MountType defined how the parameter will be
+                            mounted in the pod Defaults to EnvFile
                           type: string
                         ref:
-                          description: Ref is a reference to a local object, set ParameterType
-                            to define the object
+                          description: Name of the referent.
                           type: string
                         type:
-                          description: Type specifies if its a ConfigMap or Secret
+                          description: Type of the source othe parameter Defaults
+                            to the parameter type if not specified
                           type: string
                         value:
                           description: Value of the paramater, should not contain
-                            secret values
+                            secret values It can be a template, ParameterType should
+                            be template
                           type: string
                       type: object
                     url:
                       properties:
                         fromKey:
-                          description: Key to select from in ConfigMap or Secret
+                          description: Key to select from the source
                           type: string
                         generate:
-                          description: Generate is specified if a secret or configmap
-                            data needs to be randomly generated
+                          description: Generate if specified defines how the parameter
+                            value will be generated
                           type: string
                         key:
-                          description: Key that will be mounted as environment variable
+                          description: Key of the parameter, can be mounted as as
+                            an environment variable, used in template or as in the
+                            data fied of configmap/secret
                           type: string
                         mountFrom:
-                          description: MountFrom specifies where the parameter will
-                            be mounted as file
+                          description: MountPath specifies where the parameter will
+                            be mounted as a file
                           properties:
                             path:
                               type: string
@@ -2443,34 +2591,39 @@ spec:
                               type: string
                           type: object
                         mountType:
+                          description: MountType defined how the parameter will be
+                            mounted in the pod Defaults to EnvFile
                           type: string
                         ref:
-                          description: Ref is a reference to a local object, set ParameterType
-                            to define the object
+                          description: Name of the referent.
                           type: string
                         type:
-                          description: Type specifies if its a ConfigMap or Secret
+                          description: Type of the source othe parameter Defaults
+                            to the parameter type if not specified
                           type: string
                         value:
                           description: Value of the paramater, should not contain
-                            secret values
+                            secret values It can be a template, ParameterType should
+                            be template
                           type: string
                       type: object
                     username:
                       properties:
                         fromKey:
-                          description: Key to select from in ConfigMap or Secret
+                          description: Key to select from the source
                           type: string
                         generate:
-                          description: Generate is specified if a secret or configmap
-                            data needs to be randomly generated
+                          description: Generate if specified defines how the parameter
+                            value will be generated
                           type: string
                         key:
-                          description: Key that will be mounted as environment variable
+                          description: Key of the parameter, can be mounted as as
+                            an environment variable, used in template or as in the
+                            data fied of configmap/secret
                           type: string
                         mountFrom:
-                          description: MountFrom specifies where the parameter will
-                            be mounted as file
+                          description: MountPath specifies where the parameter will
+                            be mounted as a file
                           properties:
                             path:
                               type: string
@@ -2478,17 +2631,20 @@ spec:
                               type: string
                           type: object
                         mountType:
+                          description: MountType defined how the parameter will be
+                            mounted in the pod Defaults to EnvFile
                           type: string
                         ref:
-                          description: Ref is a reference to a local object, set ParameterType
-                            to define the object
+                          description: Name of the referent.
                           type: string
                         type:
-                          description: Type specifies if its a ConfigMap or Secret
+                          description: Type of the source othe parameter Defaults
+                            to the parameter type if not specified
                           type: string
                         value:
                           description: Value of the paramater, should not contain
-                            secret values
+                            secret values It can be a template, ParameterType should
+                            be template
                           type: string
                       type: object
                   type: object
@@ -2531,18 +2687,20 @@ spec:
                     fromEmail:
                       properties:
                         fromKey:
-                          description: Key to select from in ConfigMap or Secret
+                          description: Key to select from the source
                           type: string
                         generate:
-                          description: Generate is specified if a secret or configmap
-                            data needs to be randomly generated
+                          description: Generate if specified defines how the parameter
+                            value will be generated
                           type: string
                         key:
-                          description: Key that will be mounted as environment variable
+                          description: Key of the parameter, can be mounted as as
+                            an environment variable, used in template or as in the
+                            data fied of configmap/secret
                           type: string
                         mountFrom:
-                          description: MountFrom specifies where the parameter will
-                            be mounted as file
+                          description: MountPath specifies where the parameter will
+                            be mounted as a file
                           properties:
                             path:
                               type: string
@@ -2550,35 +2708,40 @@ spec:
                               type: string
                           type: object
                         mountType:
+                          description: MountType defined how the parameter will be
+                            mounted in the pod Defaults to EnvFile
                           type: string
                         ref:
-                          description: Ref is a reference to a local object, set ParameterType
-                            to define the object
+                          description: Name of the referent.
                           type: string
                         type:
-                          description: Type specifies if its a ConfigMap or Secret
+                          description: Type of the source othe parameter Defaults
+                            to the parameter type if not specified
                           type: string
                         value:
                           description: Value of the paramater, should not contain
-                            secret values
+                            secret values It can be a template, ParameterType should
+                            be template
                           type: string
                       type: object
                     host:
                       description: "\tSMTP_IgnoreTLS \tSMTP_Pool"
                       properties:
                         fromKey:
-                          description: Key to select from in ConfigMap or Secret
+                          description: Key to select from the source
                           type: string
                         generate:
-                          description: Generate is specified if a secret or configmap
-                            data needs to be randomly generated
+                          description: Generate if specified defines how the parameter
+                            value will be generated
                           type: string
                         key:
-                          description: Key that will be mounted as environment variable
+                          description: Key of the parameter, can be mounted as as
+                            an environment variable, used in template or as in the
+                            data fied of configmap/secret
                           type: string
                         mountFrom:
-                          description: MountFrom specifies where the parameter will
-                            be mounted as file
+                          description: MountPath specifies where the parameter will
+                            be mounted as a file
                           properties:
                             path:
                               type: string
@@ -2586,34 +2749,39 @@ spec:
                               type: string
                           type: object
                         mountType:
+                          description: MountType defined how the parameter will be
+                            mounted in the pod Defaults to EnvFile
                           type: string
                         ref:
-                          description: Ref is a reference to a local object, set ParameterType
-                            to define the object
+                          description: Name of the referent.
                           type: string
                         type:
-                          description: Type specifies if its a ConfigMap or Secret
+                          description: Type of the source othe parameter Defaults
+                            to the parameter type if not specified
                           type: string
                         value:
                           description: Value of the paramater, should not contain
-                            secret values
+                            secret values It can be a template, ParameterType should
+                            be template
                           type: string
                       type: object
                     passwor:
                       properties:
                         fromKey:
-                          description: Key to select from in ConfigMap or Secret
+                          description: Key to select from the source
                           type: string
                         generate:
-                          description: Generate is specified if a secret or configmap
-                            data needs to be randomly generated
+                          description: Generate if specified defines how the parameter
+                            value will be generated
                           type: string
                         key:
-                          description: Key that will be mounted as environment variable
+                          description: Key of the parameter, can be mounted as as
+                            an environment variable, used in template or as in the
+                            data fied of configmap/secret
                           type: string
                         mountFrom:
-                          description: MountFrom specifies where the parameter will
-                            be mounted as file
+                          description: MountPath specifies where the parameter will
+                            be mounted as a file
                           properties:
                             path:
                               type: string
@@ -2621,34 +2789,39 @@ spec:
                               type: string
                           type: object
                         mountType:
+                          description: MountType defined how the parameter will be
+                            mounted in the pod Defaults to EnvFile
                           type: string
                         ref:
-                          description: Ref is a reference to a local object, set ParameterType
-                            to define the object
+                          description: Name of the referent.
                           type: string
                         type:
-                          description: Type specifies if its a ConfigMap or Secret
+                          description: Type of the source othe parameter Defaults
+                            to the parameter type if not specified
                           type: string
                         value:
                           description: Value of the paramater, should not contain
-                            secret values
+                            secret values It can be a template, ParameterType should
+                            be template
                           type: string
                       type: object
                     port:
                       properties:
                         fromKey:
-                          description: Key to select from in ConfigMap or Secret
+                          description: Key to select from the source
                           type: string
                         generate:
-                          description: Generate is specified if a secret or configmap
-                            data needs to be randomly generated
+                          description: Generate if specified defines how the parameter
+                            value will be generated
                           type: string
                         key:
-                          description: Key that will be mounted as environment variable
+                          description: Key of the parameter, can be mounted as as
+                            an environment variable, used in template or as in the
+                            data fied of configmap/secret
                           type: string
                         mountFrom:
-                          description: MountFrom specifies where the parameter will
-                            be mounted as file
+                          description: MountPath specifies where the parameter will
+                            be mounted as a file
                           properties:
                             path:
                               type: string
@@ -2656,34 +2829,39 @@ spec:
                               type: string
                           type: object
                         mountType:
+                          description: MountType defined how the parameter will be
+                            mounted in the pod Defaults to EnvFile
                           type: string
                         ref:
-                          description: Ref is a reference to a local object, set ParameterType
-                            to define the object
+                          description: Name of the referent.
                           type: string
                         type:
-                          description: Type specifies if its a ConfigMap or Secret
+                          description: Type of the source othe parameter Defaults
+                            to the parameter type if not specified
                           type: string
                         value:
                           description: Value of the paramater, should not contain
-                            secret values
+                            secret values It can be a template, ParameterType should
+                            be template
                           type: string
                       type: object
                     username:
                       properties:
                         fromKey:
-                          description: Key to select from in ConfigMap or Secret
+                          description: Key to select from the source
                           type: string
                         generate:
-                          description: Generate is specified if a secret or configmap
-                            data needs to be randomly generated
+                          description: Generate if specified defines how the parameter
+                            value will be generated
                           type: string
                         key:
-                          description: Key that will be mounted as environment variable
+                          description: Key of the parameter, can be mounted as as
+                            an environment variable, used in template or as in the
+                            data fied of configmap/secret
                           type: string
                         mountFrom:
-                          description: MountFrom specifies where the parameter will
-                            be mounted as file
+                          description: MountPath specifies where the parameter will
+                            be mounted as a file
                           properties:
                             path:
                               type: string
@@ -2691,17 +2869,20 @@ spec:
                               type: string
                           type: object
                         mountType:
+                          description: MountType defined how the parameter will be
+                            mounted in the pod Defaults to EnvFile
                           type: string
                         ref:
-                          description: Ref is a reference to a local object, set ParameterType
-                            to define the object
+                          description: Name of the referent.
                           type: string
                         type:
-                          description: Type specifies if its a ConfigMap or Secret
+                          description: Type of the source othe parameter Defaults
+                            to the parameter type if not specified
                           type: string
                         value:
                           description: Value of the paramater, should not contain
-                            secret values
+                            secret values It can be a template, ParameterType should
+                            be template
                           type: string
                       type: object
                   type: object
@@ -2716,18 +2897,20 @@ spec:
                         \tFileUpload_S3_Proxy_Avatars \tFileUpload_S3_Proxy_Uploads"
                       properties:
                         fromKey:
-                          description: Key to select from in ConfigMap or Secret
+                          description: Key to select from the source
                           type: string
                         generate:
-                          description: Generate is specified if a secret or configmap
-                            data needs to be randomly generated
+                          description: Generate if specified defines how the parameter
+                            value will be generated
                           type: string
                         key:
-                          description: Key that will be mounted as environment variable
+                          description: Key of the parameter, can be mounted as as
+                            an environment variable, used in template or as in the
+                            data fied of configmap/secret
                           type: string
                         mountFrom:
-                          description: MountFrom specifies where the parameter will
-                            be mounted as file
+                          description: MountPath specifies where the parameter will
+                            be mounted as a file
                           properties:
                             path:
                               type: string
@@ -2735,34 +2918,39 @@ spec:
                               type: string
                           type: object
                         mountType:
+                          description: MountType defined how the parameter will be
+                            mounted in the pod Defaults to EnvFile
                           type: string
                         ref:
-                          description: Ref is a reference to a local object, set ParameterType
-                            to define the object
+                          description: Name of the referent.
                           type: string
                         type:
-                          description: Type specifies if its a ConfigMap or Secret
+                          description: Type of the source othe parameter Defaults
+                            to the parameter type if not specified
                           type: string
                         value:
                           description: Value of the paramater, should not contain
-                            secret values
+                            secret values It can be a template, ParameterType should
+                            be template
                           type: string
                       type: object
                     endpoint:
                       properties:
                         fromKey:
-                          description: Key to select from in ConfigMap or Secret
+                          description: Key to select from the source
                           type: string
                         generate:
-                          description: Generate is specified if a secret or configmap
-                            data needs to be randomly generated
+                          description: Generate if specified defines how the parameter
+                            value will be generated
                           type: string
                         key:
-                          description: Key that will be mounted as environment variable
+                          description: Key of the parameter, can be mounted as as
+                            an environment variable, used in template or as in the
+                            data fied of configmap/secret
                           type: string
                         mountFrom:
-                          description: MountFrom specifies where the parameter will
-                            be mounted as file
+                          description: MountPath specifies where the parameter will
+                            be mounted as a file
                           properties:
                             path:
                               type: string
@@ -2770,34 +2958,39 @@ spec:
                               type: string
                           type: object
                         mountType:
+                          description: MountType defined how the parameter will be
+                            mounted in the pod Defaults to EnvFile
                           type: string
                         ref:
-                          description: Ref is a reference to a local object, set ParameterType
-                            to define the object
+                          description: Name of the referent.
                           type: string
                         type:
-                          description: Type specifies if its a ConfigMap or Secret
+                          description: Type of the source othe parameter Defaults
+                            to the parameter type if not specified
                           type: string
                         value:
                           description: Value of the paramater, should not contain
-                            secret values
+                            secret values It can be a template, ParameterType should
+                            be template
                           type: string
                       type: object
                     pathStyle:
                       properties:
                         fromKey:
-                          description: Key to select from in ConfigMap or Secret
+                          description: Key to select from the source
                           type: string
                         generate:
-                          description: Generate is specified if a secret or configmap
-                            data needs to be randomly generated
+                          description: Generate if specified defines how the parameter
+                            value will be generated
                           type: string
                         key:
-                          description: Key that will be mounted as environment variable
+                          description: Key of the parameter, can be mounted as as
+                            an environment variable, used in template or as in the
+                            data fied of configmap/secret
                           type: string
                         mountFrom:
-                          description: MountFrom specifies where the parameter will
-                            be mounted as file
+                          description: MountPath specifies where the parameter will
+                            be mounted as a file
                           properties:
                             path:
                               type: string
@@ -2805,34 +2998,39 @@ spec:
                               type: string
                           type: object
                         mountType:
+                          description: MountType defined how the parameter will be
+                            mounted in the pod Defaults to EnvFile
                           type: string
                         ref:
-                          description: Ref is a reference to a local object, set ParameterType
-                            to define the object
+                          description: Name of the referent.
                           type: string
                         type:
-                          description: Type specifies if its a ConfigMap or Secret
+                          description: Type of the source othe parameter Defaults
+                            to the parameter type if not specified
                           type: string
                         value:
                           description: Value of the paramater, should not contain
-                            secret values
+                            secret values It can be a template, ParameterType should
+                            be template
                           type: string
                       type: object
                     region:
                       properties:
                         fromKey:
-                          description: Key to select from in ConfigMap or Secret
+                          description: Key to select from the source
                           type: string
                         generate:
-                          description: Generate is specified if a secret or configmap
-                            data needs to be randomly generated
+                          description: Generate if specified defines how the parameter
+                            value will be generated
                           type: string
                         key:
-                          description: Key that will be mounted as environment variable
+                          description: Key of the parameter, can be mounted as as
+                            an environment variable, used in template or as in the
+                            data fied of configmap/secret
                           type: string
                         mountFrom:
-                          description: MountFrom specifies where the parameter will
-                            be mounted as file
+                          description: MountPath specifies where the parameter will
+                            be mounted as a file
                           properties:
                             path:
                               type: string
@@ -2840,17 +3038,20 @@ spec:
                               type: string
                           type: object
                         mountType:
+                          description: MountType defined how the parameter will be
+                            mounted in the pod Defaults to EnvFile
                           type: string
                         ref:
-                          description: Ref is a reference to a local object, set ParameterType
-                            to define the object
+                          description: Name of the referent.
                           type: string
                         type:
-                          description: Type specifies if its a ConfigMap or Secret
+                          description: Type of the source othe parameter Defaults
+                            to the parameter type if not specified
                           type: string
                         value:
                           description: Value of the paramater, should not contain
-                            secret values
+                            secret values It can be a template, ParameterType should
+                            be template
                           type: string
                       type: object
                   type: object
