@@ -44,8 +44,8 @@ spec:
   #    affinity:
   #    restartPolicy:
   #    tolerations:
-      nodeSelector: 
-        "test" : "test"
+  #    nodeSelector: 
+   #     "test" : "test"
       # Container
   #    name: "app"
   #    args:
@@ -58,7 +58,6 @@ spec:
       ##
   #    extraContainers:
   #    initContainers:
-     
     network:
       # meta:
       #  name:
