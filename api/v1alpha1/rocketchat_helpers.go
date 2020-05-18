@@ -1,8 +1,10 @@
 package v1alpha1
 
 import (
-	instance "k8s.libre.sh/instance"
+	application "k8s.libre.sh/application"
+	components "k8s.libre.sh/application/components"
 	interfaces "k8s.libre.sh/interfaces"
+	meta "k8s.libre.sh/meta"
 )
 
 func (o *Rocketchat) GetOwner() interfaces.Object { return o }
@@ -21,44 +23,67 @@ func (o *Rocketchat) SetManagedBy(s string)       {}
 func (o *Rocketchat) GetApplication() string      { return "rocketchat" }
 func (o *Rocketchat) SetApplication(s string)     {}
 
-func (o *Rocketchat) GetSettings() instance.Settings {
-	return o.Spec.Settings
+func (o *Rocketchat) GetSettings() application.Settings {
+	s := application.NewSettings(o.Spec.Settings)
+	return s
 }
 
-func (app *Rocketchat) GetComponents() map[int]instance.Component {
-	components := map[int]instance.Component{
+func (app *Rocketchat) GetComponents() map[int]application.Component {
+	components := map[int]application.Component{
 		0: app.Spec.App,
 	}
 
 	return components
 }
 
-func (o *App) GetName() string { return "app" }
+// func (o *App) GetName() string { return "app" }
 
-func (c *App) SetDefaults(i instance.Instance) {
+func (c *App) SetDefaults() {
 
-	c.Workload.SetDefaults(i)
+	c.Workload.SetDefaults()
 
-	if &c.Workload.Service.Port.Port == nil || c.Workload.Service.Port.Port == 0 {
-		c.Workload.Service.Port.Port = 3000
+	if c.Workload.Backend == nil {
+		c.Workload.Backend = &components.Backend{}
 	}
-	if len(c.Workload.Service.Port.Protocol) == 0 {
-		c.Workload.Service.Port.Protocol = "TCP"
+	if &c.Workload.Backend.Port == nil || c.Workload.Backend.Port.Port == 0 {
+		c.Workload.Backend.Port.Port = 3000
 	}
-	if len(c.Workload.Service.Port.Name) == 0 {
-		c.Workload.Service.Port.Name = "http"
+	if len(c.Workload.Backend.Port.Protocol) == 0 {
+		c.Workload.Backend.Port.Protocol = "TCP"
+	}
+	if len(c.Workload.Backend.Port.Name) == 0 {
+		c.Workload.Backend.Port.Name = "http"
+	}
+
+	if len(c.Workload.Backend.Paths) == 0 {
+		c.Workload.Backend.Paths = []string{"/"}
 	}
 
 	// Set Ingress Defaults
-	for _, p := range c.Workload.Deployment.Parameters {
+	/* 	for _, p := range *c.Workload.Settings.Parameters {
 		if p.Key == "ROOT_URL" && len(p.Value) > 0 {
 			c.Workload.Network.Ingress.Host = p.Value
 		}
-	}
+	} */
+
+	// TODO TO FIX !!
+	// 	c.Workload.Backend.Hostname = "chat.libre.sh"
 
 }
 
 func (app *Rocketchat) SetDefaults() {
-	app.Spec.Settings.SetDefaults(app)
-	app.Spec.App.SetDefaults(app)
+
+	if app.Spec.Settings.ObjectMeta == nil {
+		app.Spec.Settings.ObjectMeta = new(meta.ObjectMeta)
+	}
+
+	if app.Spec.Settings.ObjectMeta.Labels == nil {
+		app.Spec.Settings.ObjectMeta.Labels = make(map[string]string)
+	}
+
+	app.Spec.Settings.ObjectMeta.SetComponent("settings")
+
+	meta.SetObjectMeta(app, app.Spec.Settings.ObjectMeta)
+	app.Spec.Settings.SetDefaults()
+	//	app.Spec.App.SetDefaults()
 }

@@ -17,7 +17,7 @@ limitations under the License.
 package v1alpha1
 
 import (
-	parameters "k8s.libre.sh/parameters"
+	parameters "k8s.libre.sh/application/settings/parameters"
 )
 
 type FileUpload struct {

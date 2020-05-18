@@ -18,6 +18,7 @@ package controllers
 
 import (
 	"context"
+	"fmt"
 
 	appsv1alpha1 "git.indie.host/operators/rocketchat-operator/api/v1alpha1"
 	"github.com/go-logr/logr"
@@ -27,7 +28,7 @@ import (
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 
-	instance "k8s.libre.sh/instance"
+	application "k8s.libre.sh/application"
 
 	"github.com/presslabs/controller-util/syncer"
 )
@@ -63,32 +64,30 @@ func (r *RocketchatReconciler) Reconcile(req ctrl.Request) (ctrl.Result, error) 
 
 	app := &appsv1alpha1.Rocketchat{}
 	if err := r.Get(ctx, req.NamespacedName, app); err != nil {
-		log.Error(err, "unable to fetch Nextcloud")
+		log.Error(err, "unable to fetch Rocketchat")
 		// we'll ignore not-found errors, since they can't be fixed by an immediate
 		// requeue (we'll need to wait for a new notification), and we can get them
 		// on deleted requests.
 		return ctrl.Result{}, ignoreNotFound(err)
 	}
 
-	app.SetDefaults()
+	// app.SetDefaults()
+	application.Init(app)
+	//	app.SetDefaults()
 
-	objects := app.Spec.Settings.GetObjects()
-
-	for _, obj := range objects {
-		s := instance.NewObjectSyncer(obj, app, r)
-
-		if err := syncer.Sync(context.TODO(), s, r.Recorder); err != nil {
-			return ctrl.Result{}, err
-		}
-	}
-
-	syncers := instance.NewSyncers(app, r, app)
-
-	err := r.sync(syncers)
+	syncers, err := application.NewSyncers(app, r, app)
 	if err != nil {
 		return ctrl.Result{}, err
 	}
 
+	err = r.sync(syncers)
+	if err != nil {
+		return ctrl.Result{}, err
+	}
+
+	for _, kk := range syncers {
+		fmt.Println(kk.GetObject())
+	}
 	return ctrl.Result{}, nil
 }
 

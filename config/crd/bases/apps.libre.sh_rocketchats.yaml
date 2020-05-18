@@ -13,6 +13,9 @@ spec:
     description: rocketchat version
     name: version
     type: string
+  - JSONPath: .metadata.creationTimestamp
+    name: Age
+    type: date
   group: apps.libre.sh
   names:
     kind: Rocketchat
@@ -51,10 +54,6 @@ spec:
                       additionalProperties:
                         type: string
                       type: object
-                    finalizers:
-                      additionalProperties:
-                        type: string
-                      type: object
                     labels:
                       additionalProperties:
                         type: string
@@ -64,6 +63,8 @@ spec:
                     namespace:
                       type: string
                   type: object
+                dependencies:
+                  type: boolean
                 deployment:
                   properties:
                     affinity:
@@ -976,40 +977,56 @@ spec:
                           name:
                             type: string
                           parameters:
-                            items:
-                              properties:
-                                fromKey:
-                                  description: Key to select from in ConfigMap or
-                                    Secret
+                            properties:
+                              configRefs:
+                                items:
                                   type: string
-                                generate:
-                                  description: "Config or EnvVar \tDestination Destination
-                                    `json:\"destination,omitempty\"` Generate is specified
-                                    if a secret or configmap data needs to be randomly
-                                    generated"
+                                type: array
+                              parameters:
+                                items:
+                                  properties:
+                                    fromKey:
+                                      description: Key to select from in ConfigMap
+                                        or Secret
+                                      type: string
+                                    generate:
+                                      description: Generate is specified if a secret
+                                        or configmap data needs to be randomly generated
+                                      type: string
+                                    key:
+                                      description: Key that will be mounted as environment
+                                        variable
+                                      type: string
+                                    mountFrom:
+                                      description: MountFrom specifies where the parameter
+                                        will be mounted as file
+                                      properties:
+                                        path:
+                                          type: string
+                                        subPath:
+                                          type: string
+                                      type: object
+                                    mountType:
+                                      type: string
+                                    ref:
+                                      description: Ref is a reference to a local object,
+                                        set ParameterType to define the object
+                                      type: string
+                                    type:
+                                      description: Type specifies if its a ConfigMap
+                                        or Secret
+                                      type: string
+                                    value:
+                                      description: Value of the paramater, should
+                                        not contain secret values
+                                      type: string
+                                  type: object
+                                type: array
+                              secretRefs:
+                                items:
                                   type: string
-                                key:
-                                  description: Key that will be mounted as environment
-                                    variable
-                                  type: string
-                                mountType:
-                                  type: string
-                                ref:
-                                  description: "Source of the Secret or ConfigMap
-                                    \tSource string `json:\"source,omitempty\"` Ref
-                                    is a reference to a local object, set ParameterType
-                                    to define the object"
-                                  type: string
-                                type:
-                                  description: Type specifies if its a ConfigMap or
-                                    Secret
-                                  type: string
-                                value:
-                                  description: Value of the paramater, should not
-                                    contain secret values
-                                  type: string
-                              type: object
-                            type: array
+                                type: array
+                            type: object
                           ports:
                             items:
                               description: ContainerPort represents a network port
@@ -1347,40 +1364,56 @@ spec:
                           name:
                             type: string
                           parameters:
-                            items:
-                              properties:
-                                fromKey:
-                                  description: Key to select from in ConfigMap or
-                                    Secret
+                            properties:
+                              configRefs:
+                                items:
                                   type: string
-                                generate:
-                                  description: "Config or EnvVar \tDestination Destination
-                                    `json:\"destination,omitempty\"` Generate is specified
-                                    if a secret or configmap data needs to be randomly
-                                    generated"
+                                type: array
+                              parameters:
+                                items:
+                                  properties:
+                                    fromKey:
+                                      description: Key to select from in ConfigMap
+                                        or Secret
+                                      type: string
+                                    generate:
+                                      description: Generate is specified if a secret
+                                        or configmap data needs to be randomly generated
+                                      type: string
+                                    key:
+                                      description: Key that will be mounted as environment
+                                        variable
+                                      type: string
+                                    mountFrom:
+                                      description: MountFrom specifies where the parameter
+                                        will be mounted as file
+                                      properties:
+                                        path:
+                                          type: string
+                                        subPath:
+                                          type: string
+                                      type: object
+                                    mountType:
+                                      type: string
+                                    ref:
+                                      description: Ref is a reference to a local object,
+                                        set ParameterType to define the object
+                                      type: string
+                                    type:
+                                      description: Type specifies if its a ConfigMap
+                                        or Secret
+                                      type: string
+                                    value:
+                                      description: Value of the paramater, should
+                                        not contain secret values
+                                      type: string
+                                  type: object
+                                type: array
+                              secretRefs:
+                                items:
                                   type: string
-                                key:
-                                  description: Key that will be mounted as environment
-                                    variable
-                                  type: string
-                                mountType:
-                                  type: string
-                                ref:
-                                  description: "Source of the Secret or ConfigMap
-                                    \tSource string `json:\"source,omitempty\"` Ref
-                                    is a reference to a local object, set ParameterType
-                                    to define the object"
-                                  type: string
-                                type:
-                                  description: Type specifies if its a ConfigMap or
-                                    Secret
-                                  type: string
-                                value:
-                                  description: Value of the paramater, should not
-                                    contain secret values
-                                  type: string
-                              type: object
-                            type: array
+                                type: array
+                            type: object
                           ports:
                             items:
                               description: ContainerPort represents a network port
@@ -1665,10 +1698,6 @@ spec:
                           additionalProperties:
                             type: string
                           type: object
-                        finalizers:
-                          additionalProperties:
-                            type: string
-                          type: object
                         labels:
                           additionalProperties:
                             type: string
@@ -1685,35 +1714,55 @@ spec:
                         type: string
                       type: object
                     parameters:
-                      items:
-                        properties:
-                          fromKey:
-                            description: Key to select from in ConfigMap or Secret
+                      properties:
+                        configRefs:
+                          items:
                             type: string
-                          generate:
-                            description: "Config or EnvVar \tDestination Destination
-                              `json:\"destination,omitempty\"` Generate is specified
-                              if a secret or configmap data needs to be randomly generated"
+                          type: array
+                        parameters:
+                          items:
+                            properties:
+                              fromKey:
+                                description: Key to select from in ConfigMap or Secret
+                                type: string
+                              generate:
+                                description: Generate is specified if a secret or
+                                  configmap data needs to be randomly generated
+                                type: string
+                              key:
+                                description: Key that will be mounted as environment
+                                  variable
+                                type: string
+                              mountFrom:
+                                description: MountFrom specifies where the parameter
+                                  will be mounted as file
+                                properties:
+                                  path:
+                                    type: string
+                                  subPath:
+                                    type: string
+                                type: object
+                              mountType:
+                                type: string
+                              ref:
+                                description: Ref is a reference to a local object,
+                                  set ParameterType to define the object
+                                type: string
+                              type:
+                                description: Type specifies if its a ConfigMap or
+                                  Secret
+                                type: string
+                              value:
+                                description: Value of the paramater, should not contain
+                                  secret values
+                                type: string
+                            type: object
+                          type: array
+                        secretRefs:
+                          items:
                             type: string
-                          key:
-                            description: Key that will be mounted as environment variable
-                            type: string
-                          mountType:
-                            type: string
-                          ref:
-                            description: "Source of the Secret or ConfigMap \tSource
-                              string `json:\"source,omitempty\"` Ref is a reference
-                              to a local object, set ParameterType to define the object"
-                            type: string
-                          type:
-                            description: Type specifies if its a ConfigMap or Secret
-                            type: string
-                          value:
-                            description: Value of the paramater, should not contain
-                              secret values
-                            type: string
-                        type: object
-                      type: array
+                          type: array
+                      type: object
                     ports:
                       items:
                         description: ContainerPort represents a network port in a
@@ -2006,13 +2055,11 @@ spec:
                   type: object
                 network:
                   properties:
-                    commonMeta:
+                    hostname:
+                      type: string
+                    ingressMeta:
                       properties:
                         annotations:
-                          additionalProperties:
-                            type: string
-                          type: object
-                        finalizers:
                           additionalProperties:
                             type: string
                           type: object
@@ -2025,86 +2072,27 @@ spec:
                         namespace:
                           type: string
                       type: object
-                    ingress:
+                    name:
+                      type: string
+                    port:
                       properties:
-                        host:
+                        name:
                           type: string
-                        meta:
-                          properties:
-                            annotations:
-                              additionalProperties:
-                                type: string
-                              type: object
-                            finalizers:
-                              additionalProperties:
-                                type: string
-                              type: object
-                            labels:
-                              additionalProperties:
-                                type: string
-                              type: object
-                            name:
-                              type: string
-                            namespace:
-                              type: string
-                          type: object
-                        routes:
-                          items:
-                            type: string
-                          type: array
-                        tls:
-                          type: boolean
-                        tlsSecretRef:
-                          type: string
-                      type: object
-                    service:
-                      properties:
-                        meta:
-                          properties:
-                            annotations:
-                              additionalProperties:
-                                type: string
-                              type: object
-                            finalizers:
-                              additionalProperties:
-                                type: string
-                              type: object
-                            labels:
-                              additionalProperties:
-                                type: string
-                              type: object
-                            name:
-                              type: string
-                            namespace:
-                              type: string
-                          type: object
                         port:
-                          properties:
-                            name:
-                              type: string
-                            port:
-                              format: int32
-                              type: integer
-                            protocol:
-                              description: Protocol defines network protocols supported
-                                for things like container ports.
-                              type: string
-                          type: object
-                        type:
-                          description: Service Type string describes ingress methods
-                            for a service
+                          format: int32
+                          type: integer
+                        protocol:
+                          description: Protocol defines network protocols supported
+                            for things like container ports.
                           type: string
                       type: object
-                  type: object
-                settings:
-                  properties:
-                    meta:
+                    routes:
+                      items:
+                        type: string
+                      type: array
+                    serviceMeta:
                       properties:
                         annotations:
-                          additionalProperties:
-                            type: string
-                          type: object
-                        finalizers:
                           additionalProperties:
                             type: string
                           type: object
@@ -2117,40 +2105,37 @@ spec:
                         namespace:
                           type: string
                       type: object
-                    parameters:
-                      items:
-                        properties:
-                          fromKey:
-                            description: Key to select from in ConfigMap or Secret
-                            type: string
-                          generate:
-                            description: "Config or EnvVar \tDestination Destination
-                              `json:\"destination,omitempty\"` Generate is specified
-                              if a secret or configmap data needs to be randomly generated"
-                            type: string
-                          key:
-                            description: Key that will be mounted as environment variable
-                            type: string
-                          mountType:
-                            type: string
-                          ref:
-                            description: "Source of the Secret or ConfigMap \tSource
-                              string `json:\"source,omitempty\"` Ref is a reference
-                              to a local object, set ParameterType to define the object"
-                            type: string
-                          type:
-                            description: Type specifies if its a ConfigMap or Secret
-                            type: string
-                          value:
-                            description: Value of the paramater, should not contain
-                              secret values
-                            type: string
-                        type: object
-                      type: array
+                    tls:
+                      type: boolean
+                    tlsSecretRef:
+                      type: string
+                    type:
+                      description: Service Type string describes ingress methods for
+                        a service
+                      type: string
                   type: object
               type: object
             settings:
               properties:
+                configMeta:
+                  properties:
+                    annotations:
+                      additionalProperties:
+                        type: string
+                      type: object
+                    labels:
+                      additionalProperties:
+                        type: string
+                      type: object
+                    name:
+                      type: string
+                    namespace:
+                      type: string
+                  type: object
+                configRefs:
+                  items:
+                    type: string
+                  type: array
                 database:
                   properties:
                     authenticationDB:
@@ -2159,19 +2144,26 @@ spec:
                           description: Key to select from in ConfigMap or Secret
                           type: string
                         generate:
-                          description: "Config or EnvVar \tDestination Destination
-                            `json:\"destination,omitempty\"` Generate is specified
-                            if a secret or configmap data needs to be randomly generated"
+                          description: Generate is specified if a secret or configmap
+                            data needs to be randomly generated
                           type: string
                         key:
                           description: Key that will be mounted as environment variable
                           type: string
+                        mountFrom:
+                          description: MountFrom specifies where the parameter will
+                            be mounted as file
+                          properties:
+                            path:
+                              type: string
+                            subPath:
+                              type: string
+                          type: object
                         mountType:
                           type: string
                         ref:
-                          description: "Source of the Secret or ConfigMap \tSource
-                            string `json:\"source,omitempty\"` Ref is a reference
-                            to a local object, set ParameterType to define the object"
+                          description: Ref is a reference to a local object, set ParameterType
+                            to define the object
                           type: string
                         type:
                           description: Type specifies if its a ConfigMap or Secret
@@ -2187,19 +2179,26 @@ spec:
                           description: Key to select from in ConfigMap or Secret
                           type: string
                         generate:
-                          description: "Config or EnvVar \tDestination Destination
-                            `json:\"destination,omitempty\"` Generate is specified
-                            if a secret or configmap data needs to be randomly generated"
+                          description: Generate is specified if a secret or configmap
+                            data needs to be randomly generated
                           type: string
                         key:
                           description: Key that will be mounted as environment variable
                           type: string
+                        mountFrom:
+                          description: MountFrom specifies where the parameter will
+                            be mounted as file
+                          properties:
+                            path:
+                              type: string
+                            subPath:
+                              type: string
+                          type: object
                         mountType:
                           type: string
                         ref:
-                          description: "Source of the Secret or ConfigMap \tSource
-                            string `json:\"source,omitempty\"` Ref is a reference
-                            to a local object, set ParameterType to define the object"
+                          description: Ref is a reference to a local object, set ParameterType
+                            to define the object
                           type: string
                         type:
                           description: Type specifies if its a ConfigMap or Secret
@@ -2215,19 +2214,26 @@ spec:
                           description: Key to select from in ConfigMap or Secret
                           type: string
                         generate:
-                          description: "Config or EnvVar \tDestination Destination
-                            `json:\"destination,omitempty\"` Generate is specified
-                            if a secret or configmap data needs to be randomly generated"
+                          description: Generate is specified if a secret or configmap
+                            data needs to be randomly generated
                           type: string
                         key:
                           description: Key that will be mounted as environment variable
                           type: string
+                        mountFrom:
+                          description: MountFrom specifies where the parameter will
+                            be mounted as file
+                          properties:
+                            path:
+                              type: string
+                            subPath:
+                              type: string
+                          type: object
                         mountType:
                           type: string
                         ref:
-                          description: "Source of the Secret or ConfigMap \tSource
-                            string `json:\"source,omitempty\"` Ref is a reference
-                            to a local object, set ParameterType to define the object"
+                          description: Ref is a reference to a local object, set ParameterType
+                            to define the object
                           type: string
                         type:
                           description: Type specifies if its a ConfigMap or Secret
@@ -2243,19 +2249,26 @@ spec:
                           description: Key to select from in ConfigMap or Secret
                           type: string
                         generate:
-                          description: "Config or EnvVar \tDestination Destination
-                            `json:\"destination,omitempty\"` Generate is specified
-                            if a secret or configmap data needs to be randomly generated"
+                          description: Generate is specified if a secret or configmap
+                            data needs to be randomly generated
                           type: string
                         key:
                           description: Key that will be mounted as environment variable
                           type: string
+                        mountFrom:
+                          description: MountFrom specifies where the parameter will
+                            be mounted as file
+                          properties:
+                            path:
+                              type: string
+                            subPath:
+                              type: string
+                          type: object
                         mountType:
                           type: string
                         ref:
-                          description: "Source of the Secret or ConfigMap \tSource
-                            string `json:\"source,omitempty\"` Ref is a reference
-                            to a local object, set ParameterType to define the object"
+                          description: Ref is a reference to a local object, set ParameterType
+                            to define the object
                           type: string
                         type:
                           description: Type specifies if its a ConfigMap or Secret
@@ -2271,19 +2284,26 @@ spec:
                           description: Key to select from in ConfigMap or Secret
                           type: string
                         generate:
-                          description: "Config or EnvVar \tDestination Destination
-                            `json:\"destination,omitempty\"` Generate is specified
-                            if a secret or configmap data needs to be randomly generated"
+                          description: Generate is specified if a secret or configmap
+                            data needs to be randomly generated
                           type: string
                         key:
                           description: Key that will be mounted as environment variable
                           type: string
+                        mountFrom:
+                          description: MountFrom specifies where the parameter will
+                            be mounted as file
+                          properties:
+                            path:
+                              type: string
+                            subPath:
+                              type: string
+                          type: object
                         mountType:
                           type: string
                         ref:
-                          description: "Source of the Secret or ConfigMap \tSource
-                            string `json:\"source,omitempty\"` Ref is a reference
-                            to a local object, set ParameterType to define the object"
+                          description: Ref is a reference to a local object, set ParameterType
+                            to define the object
                           type: string
                         type:
                           description: Type specifies if its a ConfigMap or Secret
@@ -2299,19 +2319,26 @@ spec:
                           description: Key to select from in ConfigMap or Secret
                           type: string
                         generate:
-                          description: "Config or EnvVar \tDestination Destination
-                            `json:\"destination,omitempty\"` Generate is specified
-                            if a secret or configmap data needs to be randomly generated"
+                          description: Generate is specified if a secret or configmap
+                            data needs to be randomly generated
                           type: string
                         key:
                           description: Key that will be mounted as environment variable
                           type: string
+                        mountFrom:
+                          description: MountFrom specifies where the parameter will
+                            be mounted as file
+                          properties:
+                            path:
+                              type: string
+                            subPath:
+                              type: string
+                          type: object
                         mountType:
                           type: string
                         ref:
-                          description: "Source of the Secret or ConfigMap \tSource
-                            string `json:\"source,omitempty\"` Ref is a reference
-                            to a local object, set ParameterType to define the object"
+                          description: Ref is a reference to a local object, set ParameterType
+                            to define the object
                           type: string
                         type:
                           description: Type specifies if its a ConfigMap or Secret
@@ -2330,19 +2357,26 @@ spec:
                           description: Key to select from in ConfigMap or Secret
                           type: string
                         generate:
-                          description: "Config or EnvVar \tDestination Destination
-                            `json:\"destination,omitempty\"` Generate is specified
-                            if a secret or configmap data needs to be randomly generated"
+                          description: Generate is specified if a secret or configmap
+                            data needs to be randomly generated
                           type: string
                         key:
                           description: Key that will be mounted as environment variable
                           type: string
+                        mountFrom:
+                          description: MountFrom specifies where the parameter will
+                            be mounted as file
+                          properties:
+                            path:
+                              type: string
+                            subPath:
+                              type: string
+                          type: object
                         mountType:
                           type: string
                         ref:
-                          description: "Source of the Secret or ConfigMap \tSource
-                            string `json:\"source,omitempty\"` Ref is a reference
-                            to a local object, set ParameterType to define the object"
+                          description: Ref is a reference to a local object, set ParameterType
+                            to define the object
                           type: string
                         type:
                           description: Type specifies if its a ConfigMap or Secret
@@ -2358,19 +2392,26 @@ spec:
                           description: Key to select from in ConfigMap or Secret
                           type: string
                         generate:
-                          description: "Config or EnvVar \tDestination Destination
-                            `json:\"destination,omitempty\"` Generate is specified
-                            if a secret or configmap data needs to be randomly generated"
+                          description: Generate is specified if a secret or configmap
+                            data needs to be randomly generated
                           type: string
                         key:
                           description: Key that will be mounted as environment variable
                           type: string
+                        mountFrom:
+                          description: MountFrom specifies where the parameter will
+                            be mounted as file
+                          properties:
+                            path:
+                              type: string
+                            subPath:
+                              type: string
+                          type: object
                         mountType:
                           type: string
                         ref:
-                          description: "Source of the Secret or ConfigMap \tSource
-                            string `json:\"source,omitempty\"` Ref is a reference
-                            to a local object, set ParameterType to define the object"
+                          description: Ref is a reference to a local object, set ParameterType
+                            to define the object
                           type: string
                         type:
                           description: Type specifies if its a ConfigMap or Secret
@@ -2386,19 +2427,26 @@ spec:
                           description: Key to select from in ConfigMap or Secret
                           type: string
                         generate:
-                          description: "Config or EnvVar \tDestination Destination
-                            `json:\"destination,omitempty\"` Generate is specified
-                            if a secret or configmap data needs to be randomly generated"
+                          description: Generate is specified if a secret or configmap
+                            data needs to be randomly generated
                           type: string
                         key:
                           description: Key that will be mounted as environment variable
                           type: string
+                        mountFrom:
+                          description: MountFrom specifies where the parameter will
+                            be mounted as file
+                          properties:
+                            path:
+                              type: string
+                            subPath:
+                              type: string
+                          type: object
                         mountType:
                           type: string
                         ref:
-                          description: "Source of the Secret or ConfigMap \tSource
-                            string `json:\"source,omitempty\"` Ref is a reference
-                            to a local object, set ParameterType to define the object"
+                          description: Ref is a reference to a local object, set ParameterType
+                            to define the object
                           type: string
                         type:
                           description: Type specifies if its a ConfigMap or Secret
@@ -2414,19 +2462,26 @@ spec:
                           description: Key to select from in ConfigMap or Secret
                           type: string
                         generate:
-                          description: "Config or EnvVar \tDestination Destination
-                            `json:\"destination,omitempty\"` Generate is specified
-                            if a secret or configmap data needs to be randomly generated"
+                          description: Generate is specified if a secret or configmap
+                            data needs to be randomly generated
                           type: string
                         key:
                           description: Key that will be mounted as environment variable
                           type: string
+                        mountFrom:
+                          description: MountFrom specifies where the parameter will
+                            be mounted as file
+                          properties:
+                            path:
+                              type: string
+                            subPath:
+                              type: string
+                          type: object
                         mountType:
                           type: string
                         ref:
-                          description: "Source of the Secret or ConfigMap \tSource
-                            string `json:\"source,omitempty\"` Ref is a reference
-                            to a local object, set ParameterType to define the object"
+                          description: Ref is a reference to a local object, set ParameterType
+                            to define the object
                           type: string
                         type:
                           description: Type specifies if its a ConfigMap or Secret
@@ -2443,7 +2498,18 @@ spec:
                       additionalProperties:
                         type: string
                       type: object
-                    finalizers:
+                    labels:
+                      additionalProperties:
+                        type: string
+                      type: object
+                    name:
+                      type: string
+                    namespace:
+                      type: string
+                  type: object
+                secretMeta:
+                  properties:
+                    annotations:
                       additionalProperties:
                         type: string
                       type: object
@@ -2456,6 +2522,10 @@ spec:
                     namespace:
                       type: string
                   type: object
+                secretRefs:
+                  items:
+                    type: string
+                  type: array
                 smtp:
                   properties:
                     fromEmail:
@@ -2464,19 +2534,26 @@ spec:
                           description: Key to select from in ConfigMap or Secret
                           type: string
                         generate:
-                          description: "Config or EnvVar \tDestination Destination
-                            `json:\"destination,omitempty\"` Generate is specified
-                            if a secret or configmap data needs to be randomly generated"
+                          description: Generate is specified if a secret or configmap
+                            data needs to be randomly generated
                           type: string
                         key:
                           description: Key that will be mounted as environment variable
                           type: string
+                        mountFrom:
+                          description: MountFrom specifies where the parameter will
+                            be mounted as file
+                          properties:
+                            path:
+                              type: string
+                            subPath:
+                              type: string
+                          type: object
                         mountType:
                           type: string
                         ref:
-                          description: "Source of the Secret or ConfigMap \tSource
-                            string `json:\"source,omitempty\"` Ref is a reference
-                            to a local object, set ParameterType to define the object"
+                          description: Ref is a reference to a local object, set ParameterType
+                            to define the object
                           type: string
                         type:
                           description: Type specifies if its a ConfigMap or Secret
@@ -2493,19 +2570,26 @@ spec:
                           description: Key to select from in ConfigMap or Secret
                           type: string
                         generate:
-                          description: "Config or EnvVar \tDestination Destination
-                            `json:\"destination,omitempty\"` Generate is specified
-                            if a secret or configmap data needs to be randomly generated"
+                          description: Generate is specified if a secret or configmap
+                            data needs to be randomly generated
                           type: string
                         key:
                           description: Key that will be mounted as environment variable
                           type: string
+                        mountFrom:
+                          description: MountFrom specifies where the parameter will
+                            be mounted as file
+                          properties:
+                            path:
+                              type: string
+                            subPath:
+                              type: string
+                          type: object
                         mountType:
                           type: string
                         ref:
-                          description: "Source of the Secret or ConfigMap \tSource
-                            string `json:\"source,omitempty\"` Ref is a reference
-                            to a local object, set ParameterType to define the object"
+                          description: Ref is a reference to a local object, set ParameterType
+                            to define the object
                           type: string
                         type:
                           description: Type specifies if its a ConfigMap or Secret
@@ -2521,19 +2605,26 @@ spec:
                           description: Key to select from in ConfigMap or Secret
                           type: string
                         generate:
-                          description: "Config or EnvVar \tDestination Destination
-                            `json:\"destination,omitempty\"` Generate is specified
-                            if a secret or configmap data needs to be randomly generated"
+                          description: Generate is specified if a secret or configmap
+                            data needs to be randomly generated
                           type: string
                         key:
                           description: Key that will be mounted as environment variable
                           type: string
+                        mountFrom:
+                          description: MountFrom specifies where the parameter will
+                            be mounted as file
+                          properties:
+                            path:
+                              type: string
+                            subPath:
+                              type: string
+                          type: object
                         mountType:
                           type: string
                         ref:
-                          description: "Source of the Secret or ConfigMap \tSource
-                            string `json:\"source,omitempty\"` Ref is a reference
-                            to a local object, set ParameterType to define the object"
+                          description: Ref is a reference to a local object, set ParameterType
+                            to define the object
                           type: string
                         type:
                           description: Type specifies if its a ConfigMap or Secret
@@ -2549,19 +2640,26 @@ spec:
                           description: Key to select from in ConfigMap or Secret
                           type: string
                         generate:
-                          description: "Config or EnvVar \tDestination Destination
-                            `json:\"destination,omitempty\"` Generate is specified
-                            if a secret or configmap data needs to be randomly generated"
+                          description: Generate is specified if a secret or configmap
+                            data needs to be randomly generated
                           type: string
                         key:
                           description: Key that will be mounted as environment variable
                           type: string
+                        mountFrom:
+                          description: MountFrom specifies where the parameter will
+                            be mounted as file
+                          properties:
+                            path:
+                              type: string
+                            subPath:
+                              type: string
+                          type: object
                         mountType:
                           type: string
                         ref:
-                          description: "Source of the Secret or ConfigMap \tSource
-                            string `json:\"source,omitempty\"` Ref is a reference
-                            to a local object, set ParameterType to define the object"
+                          description: Ref is a reference to a local object, set ParameterType
+                            to define the object
                           type: string
                         type:
                           description: Type specifies if its a ConfigMap or Secret
@@ -2577,19 +2675,26 @@ spec:
                           description: Key to select from in ConfigMap or Secret
                           type: string
                         generate:
-                          description: "Config or EnvVar \tDestination Destination
-                            `json:\"destination,omitempty\"` Generate is specified
-                            if a secret or configmap data needs to be randomly generated"
+                          description: Generate is specified if a secret or configmap
+                            data needs to be randomly generated
                           type: string
                         key:
                           description: Key that will be mounted as environment variable
                           type: string
+                        mountFrom:
+                          description: MountFrom specifies where the parameter will
+                            be mounted as file
+                          properties:
+                            path:
+                              type: string
+                            subPath:
+                              type: string
+                          type: object
                         mountType:
                           type: string
                         ref:
-                          description: "Source of the Secret or ConfigMap \tSource
-                            string `json:\"source,omitempty\"` Ref is a reference
-                            to a local object, set ParameterType to define the object"
+                          description: Ref is a reference to a local object, set ParameterType
+                            to define the object
                           type: string
                         type:
                           description: Type specifies if its a ConfigMap or Secret
@@ -2614,19 +2719,26 @@ spec:
                           description: Key to select from in ConfigMap or Secret
                           type: string
                         generate:
-                          description: "Config or EnvVar \tDestination Destination
-                            `json:\"destination,omitempty\"` Generate is specified
-                            if a secret or configmap data needs to be randomly generated"
+                          description: Generate is specified if a secret or configmap
+                            data needs to be randomly generated
                           type: string
                         key:
                           description: Key that will be mounted as environment variable
                           type: string
+                        mountFrom:
+                          description: MountFrom specifies where the parameter will
+                            be mounted as file
+                          properties:
+                            path:
+                              type: string
+                            subPath:
+                              type: string
+                          type: object
                         mountType:
                           type: string
                         ref:
-                          description: "Source of the Secret or ConfigMap \tSource
-                            string `json:\"source,omitempty\"` Ref is a reference
-                            to a local object, set ParameterType to define the object"
+                          description: Ref is a reference to a local object, set ParameterType
+                            to define the object
                           type: string
                         type:
                           description: Type specifies if its a ConfigMap or Secret
@@ -2642,19 +2754,26 @@ spec:
                           description: Key to select from in ConfigMap or Secret
                           type: string
                         generate:
-                          description: "Config or EnvVar \tDestination Destination
-                            `json:\"destination,omitempty\"` Generate is specified
-                            if a secret or configmap data needs to be randomly generated"
+                          description: Generate is specified if a secret or configmap
+                            data needs to be randomly generated
                           type: string
                         key:
                           description: Key that will be mounted as environment variable
                           type: string
+                        mountFrom:
+                          description: MountFrom specifies where the parameter will
+                            be mounted as file
+                          properties:
+                            path:
+                              type: string
+                            subPath:
+                              type: string
+                          type: object
                         mountType:
                           type: string
                         ref:
-                          description: "Source of the Secret or ConfigMap \tSource
-                            string `json:\"source,omitempty\"` Ref is a reference
-                            to a local object, set ParameterType to define the object"
+                          description: Ref is a reference to a local object, set ParameterType
+                            to define the object
                           type: string
                         type:
                           description: Type specifies if its a ConfigMap or Secret
@@ -2670,19 +2789,26 @@ spec:
                           description: Key to select from in ConfigMap or Secret
                           type: string
                         generate:
-                          description: "Config or EnvVar \tDestination Destination
-                            `json:\"destination,omitempty\"` Generate is specified
-                            if a secret or configmap data needs to be randomly generated"
+                          description: Generate is specified if a secret or configmap
+                            data needs to be randomly generated
                           type: string
                         key:
                           description: Key that will be mounted as environment variable
                           type: string
+                        mountFrom:
+                          description: MountFrom specifies where the parameter will
+                            be mounted as file
+                          properties:
+                            path:
+                              type: string
+                            subPath:
+                              type: string
+                          type: object
                         mountType:
                           type: string
                         ref:
-                          description: "Source of the Secret or ConfigMap \tSource
-                            string `json:\"source,omitempty\"` Ref is a reference
-                            to a local object, set ParameterType to define the object"
+                          description: Ref is a reference to a local object, set ParameterType
+                            to define the object
                           type: string
                         type:
                           description: Type specifies if its a ConfigMap or Secret
@@ -2698,19 +2824,26 @@ spec:
                           description: Key to select from in ConfigMap or Secret
                           type: string
                         generate:
-                          description: "Config or EnvVar \tDestination Destination
-                            `json:\"destination,omitempty\"` Generate is specified
-                            if a secret or configmap data needs to be randomly generated"
+                          description: Generate is specified if a secret or configmap
+                            data needs to be randomly generated
                           type: string
                         key:
                           description: Key that will be mounted as environment variable
                           type: string
+                        mountFrom:
+                          description: MountFrom specifies where the parameter will
+                            be mounted as file
+                          properties:
+                            path:
+                              type: string
+                            subPath:
+                              type: string
+                          type: object
                         mountType:
                           type: string
                         ref:
-                          description: "Source of the Secret or ConfigMap \tSource
-                            string `json:\"source,omitempty\"` Ref is a reference
-                            to a local object, set ParameterType to define the object"
+                          description: Ref is a reference to a local object, set ParameterType
+                            to define the object
                           type: string
                         type:
                           description: Type specifies if its a ConfigMap or Secret
@@ -2727,6 +2860,70 @@ spec:
           type: object
         status:
           description: RocketchatStatus defines the observed state of Rocketchat
+          properties:
+            components:
+              description: Object status array for all matching objects
+              items:
+                description: ObjectStatus is a generic status holder for objects
+                properties:
+                  group:
+                    description: Object group
+                    type: string
+                  kind:
+                    description: Kind of object
+                    type: string
+                  link:
+                    description: Link to object GetSelfLink()
+                    type: string
+                  name:
+                    description: Name of object
+                    type: string
+                  status:
+                    description: 'Status. Values: InProgress, Ready, Unknown'
+                    type: string
+                type: object
+              type: array
+            componentsReady:
+              description: 'ComponentsReady: status of the components in the format
+                ready/total'
+              type: string
+            conditions:
+              description: Conditions represents the latest state of the object
+              items:
+                description: Condition describes the state of an object at a certain
+                  point.
+                properties:
+                  lastTransitionTime:
+                    description: Last time the condition transitioned from one status
+                      to another.
+                    format: date-time
+                    type: string
+                  lastUpdateTime:
+                    description: Last time the condition was probed
+                    format: date-time
+                    type: string
+                  message:
+                    description: A human readable message indicating details about
+                      the transition.
+                    type: string
+                  reason:
+                    description: "Status of the condition, one of True, False, Unknown.
+                      \tStatus corev1.ConditionStatus `json:\"status\" protobuf:\"bytes,2,opt,name=status,casttype=k8s.io/api/core/v1.ConditionStatus\"`
+                      The reason for the condition's last transition."
+                    type: string
+                  type:
+                    description: Type of condition.
+                    type: string
+                required:
+                - type
+                type: object
+              type: array
+            observedGeneration:
+              description: ObservedGeneration is the most recent generation observed.
+                It corresponds to the Object's generation, which is updated on mutation
+                by the API Server.
+              format: int64
+              type: integer
           type: object
       type: object
   version: v1alpha1
