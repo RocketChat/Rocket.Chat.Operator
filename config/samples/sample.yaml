@@ -1,0 +1,75 @@
+apiVersion: apps.libre.sh/v1alpha1
+kind: Rocketchat
+metadata:
+  name: rocketchat-sample
+spec:
+  # Add fields here
+  settings:
+    secretRefs:
+      - mysupersecret-source
+    configRefs:
+      - myconfigmap-source
+    general:
+      url: 
+        value: chat.myhost.tld
+        type: "configmap"
+    smtp:
+      username:
+        mountType: from
+        fromKey: smtp-username
+        ref: smtp-configmap
+        type: configmap
+    database:
+      url:
+        value: "{{ .ROOT_URL }}"
+        generate: "template"
+        type: "configmap"
+      oplogURL:
+        ref: "my-secret"
+        fromKey: OPLOG_URL
+        type: "secret"
+  app: 
+    # Deployment
+    deployment:
+  #    meta:
+  #      name:
+  #      labels:
+  #      annotations:
+  #      finalizers:
+      replicas: 2
+  #    strategy:
+      # Pod
+  #    resources:
+  #    securityContext:
+  #    affinity:
+  #    restartPolicy:
+  #    tolerations:
+      nodeSelector: 
+        "test" : "test"
+      # Container
+  #    name: "app"
+  #    args:
+      image: "rocketchat/rocket.chat"
+  #    imagePullPolicy:
+  #    imagePullSecrets:
+  #    ports:
+  #    readinessProbe:
+  #    livenessProbe:
+      ##
+  #    extraContainers:
+  #    initContainers:
+     
+    network:
+      # meta:
+      #  name:
+      #  labels:
+      #  annotations:
+   #     port:
+   #       name: http
+   #       port: 3000
+   #       protocol: TCP
+      hostname: myhost.tld
+      tls: true
+    #    tlsSecretRef: mysecret-tls
+       # routes:
+        #  - "/"
