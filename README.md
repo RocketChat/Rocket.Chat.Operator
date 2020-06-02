@@ -1,2 +1,2 @@
 # Rocket.Chat.Operator
-Experimental - Not recommended for use
+Experimental - Not recommended for use yet
